@@ -6,7 +6,9 @@ This project is a  LTM OLED reader for INAV. I have added an small OLED screen t
 
 Now I can fly in third view no-fpv with full data from the plane. 
 
-Some photos of the hack (it is an arduino nano decoding the LTM from a openlrsng TX 433 módule).
+Some photos of the hack (it is an arduino nano decoding the LTM from a openlrsng TX 433 módule) here:
+
+https://www.rcgroups.com/forums/showpost.php?p=37011233&postcount=11930
 
 
 
