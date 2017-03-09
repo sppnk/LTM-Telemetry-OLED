@@ -10,7 +10,7 @@
 // LTM telemetry is designed for low baudrates, only downlink. Its best goal is 
 // the aircraft is sending its GPS position (and other data) continuosly, so it is
 // your 'GPS beacon' to find your lost plane.
-// This is intended only for OLED telemetry, althought can be resized to antennatracker.
+// This is intended only for OLED telemetry, althought can be resized to ground OSD or antennatracker.
 //
 //
 // sppnk 2017
