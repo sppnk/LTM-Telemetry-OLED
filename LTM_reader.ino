@@ -44,9 +44,9 @@
 #include <MemoryFree.h>
 #endif
 
-#include <Wire.h>               //if OLED is CO-16, short pins 13-14 to use this.
-//#include <Adafruit_GFX.h>     //not used in this code
-#include <Adafruit_SSD1306.h> // memory consumer library. fixme
+#include <Wire.h>                           //if OLED is CO-16, short pins 13-14 to use this.
+//#include <Adafruit_GFX.h>                 //not used in this code
+#include <Adafruit_SSD1306.h>               // memory consumer library. fixme
 
 
 #define OLED_RESET 4
@@ -59,14 +59,14 @@ Adafruit_SSD1306 display(OLED_RESET);
 #define PROTOCOL_LIGHTTELEMETRY
 #define BUTTON        4
 #define OLED_PANELS   6
-#define LTM_BAUDS     9600        // the lower the better
+#define LTM_BAUDS     9600                       // the lower the better
 
 //#include <SoftwareSerial.h>                   //this Software serial library gives many problmems
-//SoftwareSerial ltmSerial(8, 9);//8-RX, 9-TX
+//SoftwareSerial ltmSerial(8, 9);               //8-RX, 9-TX
 //Serial ltmserial;
 
-#include <AltSoftSerial.h>
-AltSoftSerial ltmSerial(8, 9);//8-RX, 9-TX
+#include <AltSoftSerial.h>              //  This library works fine
+AltSoftSerial ltmSerial(8, 9);          //8-RX, 9-TX
 
 #include "Lighttelemetry.cpp"
 #include <stdint.h>
@@ -83,12 +83,12 @@ uint32_t    debounceDelay = 100;
 
 //////////////////////////////////////////functions
 
-void read_button() {
+void read_button() { // detect the button has been pushed (debouncing) and increase displaypage counter
 
   button_read = digitalRead(BUTTON);
   //Serial.print(button_read);
 
-  if (button_read != button_laststate)  //pressed button
+  if (button_read != button_laststate)    //pressed button
   {
     lastDebounceTime = millis();          //reset debouncing timer
   }
@@ -115,7 +115,7 @@ void read_button() {
 
 /////////////////////// calculations
 
-void updateVars() {
+void updateVars() { // calculate some variables from LTM raw data
 
   float dstlon, dstlat;
 
@@ -127,18 +127,18 @@ void updateVars() {
 
   if (uav_homefixstatus == 1) {
 
-    //DST to Home
+    // Distance to Home
 
     dstlat = fabs(uav_homelat - uav_lat);
     dstlon = fabs(uav_homelon - uav_lon) * scaleLongDown;
-    home_distance = sqrt(sq(dstlat) + sq(dstlon)) * 1.113195 / 100 ; // from cm to m
+    home_distance = sqrt(sq(dstlat) + sq(dstlon)) * 1.113195 / 100 ;            // from cm to m
 
-    //DIR to Home
+    // Direction to Home
 
-    home_heading = (int) round (90 + (atan2(dstlat, -dstlon) * 57.295775)); //absolut home direction
-    if (home_heading < 0) home_heading += 360; //normalization
-    home_heading = home_heading - 180;//absolut return direction
-    if (home_heading < 0) home_heading += 360; //normalization
+    home_heading = (int) round (90 + (atan2(dstlat, -dstlon) * 57.295775));       //absolut home direction
+    if (home_heading < 0) home_heading += 360;                                    //normalization
+    home_heading = home_heading - 180;                                            //absolut return direction
+    if (home_heading < 0) home_heading += 360;                                    //normalization FIXME
   }
   else
   {
@@ -150,7 +150,7 @@ void updateVars() {
 
 ////////////////////////////////////// display OLED
 
-void display_oled() {
+void display_oled() { // display data set in OLED depending on displaypage var
 
   display.clearDisplay();
   display.setCursor(0, 0);
@@ -183,7 +183,7 @@ void display_oled() {
       display.print(F("RSSI:  "));  display.println(uav_rssi);
       display.print(F("ALT:   "));  display.println(uav_alt);
       display.print(F("VBATT: "));  display.println(uav_bat);
-      display.print(F("AMP:   "));  display.println(uav_amp);
+      display.print(F("AMP:   "));  display.println(uav_amp); //this seems to be Amph, not current
       display.setTextSize(1);
       display.print(F("OK: "));  display.println(LTM_pkt_ok);
       display.print(F(" KO: "));  display.println(LTM_pkt_ko);
@@ -221,9 +221,7 @@ void display_oled() {
 
       display.setTextSize(2);
 
-//      display.print(F("FS:  ")); display.println(uav_failsafe);
-//      
-//      
+//      display.print(F("FS:  ")); display.println(uav_failsafe); //removed because Arduino compiler weird error
 //      display.print(F("ARM: ")); display.println(uav_arm);
 //      display.print(F("Err: "));  display.println(ltm_naverror);
       display.print(F("Flg: "));  display.println(ltm_flags);
@@ -240,7 +238,7 @@ void display_oled() {
 
 }
 
-//void blinkled() { //debug
+//void blinkled() { // led for debugging. removed to save memory
 //
 //  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
 //  delay(100);                       // wait for a second
@@ -253,12 +251,12 @@ void display_oled() {
 
 void setup() {
 
-  //Serial.begin(57600);        //debug port arduino
-  ltmSerial.begin(LTM_BAUDS);        //telemetry downlink is 9600. PLease set your telemetry downlink so.
+  //Serial.begin(57600);              // debug port arduino. removed as it is not used it in the final working device
+  ltmSerial.begin(LTM_BAUDS);         //telemetry downlink is 9600 now . PLease set your telemetry downlink so.
   //pinMode(LED_BUILTIN, OUTPUT); //debug
-  pinMode(BUTTON, INPUT);
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C); //CRIUS CO-16 soldered pins to use adafruit libraries
-  display.setTextColor(WHITE);
+  pinMode(BUTTON, INPUT);                     // digital input for pushbutton. Connnect to GND the other end of it.
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  //CRIUS CO-16 soldered pins to use adafruit libraries
+  display.setTextColor(WHITE);                
   display.clearDisplay();
   //blinkled(); blinkled(); //debug
 
@@ -271,13 +269,13 @@ void loop() {
   //while (ltmSerial.available()) {Serial.print(ltmSerial.read());}  //debug
 
 
-  ltm_read(); //read LTM telemetry
+  ltm_read();           //read LTM telemetry
 
-  updateVars(); // calculate some variables from LTM data
+  updateVars();         // calculate some variables from LTM data
 
-  read_button(); // check pushbutton and increase page counter
+  read_button();        // check pushbutton and increase page counter
 
-  display_oled(); // display data in oled screen
+  display_oled();       // display data in oled screen
 
 
 
