@@ -1,16 +1,16 @@
 
 
 // ************************************************************
-//            LTM READER
+//            LTM TELEMETRY OLED READER
 //
 // Simple LTM Telemetry parser and displayer for OLED 128x64 SSD1306
 // Based in code from Kipk (Getthostation)and others. Thanks to Digital Entity, DIvkvu, Bart from EZGUI and all the people 
 // working and testing  INAV.
 // Mainly used for INAV flight controllers
 // LTM telemetry is designed for low baudrates, only downlink. Its best goal is 
-// the aircraft is sending its GPS position (and other data) continuosly, so it is
+// the aircraft is sending its GPS position (and other data) continuosly, so it is also
 // your 'GPS beacon' to find your lost plane.
-// This is intended only for OLED telemetry, althought can be resized to ground OSD or antennatracker.
+// This is intended only for OLED telemetry, althought can be resized to be a ground OSD or antennatracker.
 //
 //
 // sppnk 2017
@@ -20,10 +20,10 @@
 // NOTES:
 //
 //
-// You can mount this project inside your transmitter, or throught a serial bluetooth connection (easier). This way
-// EZGUI can be used at the same time with BT connection
+// You can mount this project inside your transmitter, or throught a serial bluetooth connection (easier). On first way
+// EZGUI can be used at the same time with BT connection. 
 
-// Pushbutton optional to change screens .
+// Pushbutton  to change screens .
 //
 // if you use bluetooth, HC-05 must be set to automatic pairing with the transmitter BT module.
 // Connect BT module tx pin to pin8 in arduino
@@ -131,11 +131,11 @@ void updateVars() { // calculate some variables from LTM raw data
 
     dstlat = fabs(uav_homelat - uav_lat);
     dstlon = fabs(uav_homelon - uav_lon) * scaleLongDown;
-    home_distance = sqrt(sq(dstlat) + sq(dstlon)) * 1.113195 / 100 ;            // from cm to m
+    home_distance = sqrt(sq(dstlat) + sq(dstlon)) * 1.113195 / 100 ;            // from cm to m (testing)
 
     // Direction to Home
 
-    home_heading = (int) round (90 + (atan2(dstlat, -dstlon) * 57.295775));       //absolut home direction
+    home_heading = (int) round (90 + (atan2(dstlat, -dstlon) * 57.295775));       //absolut home direction (testing)
     if (home_heading < 0) home_heading += 360;                                    //normalization
     home_heading = home_heading - 180;                                            //absolut return direction
     if (home_heading < 0) home_heading += 360;                                    //normalization FIXME
@@ -150,7 +150,8 @@ void updateVars() { // calculate some variables from LTM raw data
 
 ////////////////////////////////////// display OLED
 
-void display_oled() { // display data set in OLED depending on displaypage var
+void display_oled() { // display data set in OLED depending on displaypage var. Change at your needs.
+                      // I have found that textsize 2 causes problems and hangs antire device if the showed numbers are big.
 
   display.clearDisplay();
   display.setCursor(0, 0);
@@ -158,7 +159,7 @@ void display_oled() { // display data set in OLED depending on displaypage var
 
   switch (displaypage) {
 
-    case 0: //MAIN DATA SCREEN
+    case 0:                 //MAIN DATA SCREEN
 
 
       display.print(F("Sats: ")); display.print(uav_satellites_visible);
@@ -176,7 +177,7 @@ void display_oled() { // display data set in OLED depending on displaypage var
       display.print(F(" KO: "));  display.println(LTM_pkt_ko);
       break;
 
-    case 1:
+    case 1:               // BIG SIZE
 
       display.setTextSize(2);
       display.setCursor(0, 0);
