@@ -36,7 +36,7 @@
 // - code is crappy, althought it works, a clean it up is neccesary
 // - add buzzer to create vario 
 // - add buzzer to create distance, altitude or RSSI audible alarms
-// - add arrow graphic for bearing home instead value, to fly by instruments if video is lost.
+// - add arrow graphic for bearing home instead the numerical value, (to fly by instruments if video is lost).
 // - many more TODOs
 // 
 
