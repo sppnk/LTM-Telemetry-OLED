@@ -183,7 +183,7 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
       display.setCursor(0, 0);
       display.print(F("RSSI:  "));  display.println(uav_rssi);
       display.print(F("ALT:   "));  display.println(uav_alt);
-      display.print(F("VBATT: "));  display.println(uav_bat);
+      display.print(F("VBATT: "));  display.println(uav_bat/1000);//show Volts, not mV
       display.print(F("AMP:   "));  display.println(uav_amp); //this seems to be Amph, not current
       display.setTextSize(1);
       display.print(F("OK: "));  display.println(LTM_pkt_ok);
