@@ -135,7 +135,7 @@ void updateVars() { // calculate some variables from LTM raw data
 
     // Direction to Home
 
-    home_heading = (int) round (90 + (atan2(dstlat, -dstlon) * 57.295775))/100;       //absolut home direction (testing)
+    home_heading = (int) round (90 + (atan2(dstlat, -dstlon) * 57.295775));       //absolut home direction (testing)
     if (home_heading < 0) home_heading += 360;                                    //normalization
     home_heading = home_heading - 180;                                            //absolut return direction
     if (home_heading < 0) home_heading += 360;                                    //normalization FIXME
