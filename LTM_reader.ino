@@ -204,7 +204,8 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
     case 3:
       display.setTextSize(2);
       display.print(F("Home: ")); display.println(home_distance);
-      display.print(F("HDir: ")); display.println(home_heading);
+      //display.print(F("HDir: ")); display.println(home_heading);
+      display.print(F("AngH: ")); display.println(home_heading-home bearing);
       display.print(F("RSSI: "));  display.println(uav_rssi);
       display.print(F("ALT:  "));  display.println(uav_alt);
       break;
