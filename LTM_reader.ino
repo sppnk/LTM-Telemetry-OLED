@@ -4,10 +4,10 @@
 //            LTM TELEMETRY OLED READER
 //
 // Simple LTM Telemetry parser and displayer for OLED 128x64 SSD1306
-// Based in code from Kipk (Getthostation)and others. Thanks to Digital Entity, DIvkvu, Bart from EZGUI and all the people 
+// Based in code from Kipk (Getthostation)and others. Thanks to Digital Entity, DIvkvu, Bart from EZGUI and all the people
 // working and testing  INAV.
 // Mainly used for INAV flight controllers
-// LTM telemetry is designed for low baudrates, only downlink. Its best goal is 
+// LTM telemetry is designed for low baudrates, only downlink. Its best goal is
 // the aircraft is sending its GPS position (and other data) continuosly, so it is also
 // your 'GPS beacon' to find your lost plane.
 // This is intended only for OLED telemetry, althought can be resized to be a ground OSD or antennatracker.
@@ -21,7 +21,7 @@
 //
 //
 // You can mount this project inside your transmitter, or throught a serial bluetooth connection (easier). On first way
-// EZGUI can be used at the same time with BT connection. 
+// EZGUI can be used at the same time with BT connection.
 
 // Pushbutton  to change screens .
 //
@@ -29,16 +29,16 @@
 // Connect BT module tx pin to pin8 in arduino
 // if you make the mod in your transmitter instead serial Bluetooth connection, you can connect directly you TX line to pin8
 // be carefull to supply your Arduino through BEC (mine takes BAT+ from Internal pinout for external module)
-// 
+//
 //
 //
 // TODO:
 // - code is crappy, althought it works, a clean it up is neccesary
-// - add buzzer to create vario 
+// - add buzzer to create vario
 // - add buzzer to create distance, altitude, battery or RSSI audible alarms
 // - add arrow graphic for bearing home instead the numerical value, (to fly by instruments if video is lost).
 // - many more TODOs
-// 
+//
 
 #ifdef membug
 #include <MemoryFree.h>
@@ -151,7 +151,7 @@ void updateVars() { // calculate some variables from LTM raw data
 ////////////////////////////////////// display OLED
 
 void display_oled() { // display data set in OLED depending on displaypage var. Change at your needs.
-                      // I have found that textsize 2 causes problems and hangs antire device if the showed numbers are big.
+  // I have found that textsize 2 causes problems and hangs antire device if the showed numbers are big.
 
   display.clearDisplay();
   display.setCursor(0, 0);
@@ -160,8 +160,40 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
   switch (displaypage) {
 
     case 0:                 //MAIN DATA SCREEN
+      display.setTextSize(1);
 
+      display.print(F("HOM "));display.setTextSize(1); display.print(home_distance);   display.setTextSize(1);display.print(F(" DEG "));display.println(home_heading - uav_heading);display.println();
+      display.setTextSize(1);display.print(F("RSSI "));  display.setTextSize(2);display.print(uav_rssi); display.setTextSize(1);display.print(F(" ALT "));  display.setTextSize(2);display.println(uav_alt);
+      display.setTextSize(1);display.print(F("VBAT "));  display.setTextSize(2);display.print(uav_bat / 100); display.setTextSize(1);display.print(F(" AMP "));  display.setTextSize(2);display.println(uav_amp);
+           display.setTextSize(1);display.print(F("SATS "));  display.setTextSize(2);display.print(uav_satellites_visible); display.setTextSize(1);display.print(F(" MODE "));  display.setTextSize(2);display.println(uav_flightmode);
 
+      break;
+
+    case 1:               // BIG SIZE
+
+      display.setTextSize(2);
+      display.setCursor(0, 0);
+      display.print(F("RSSI:  "));  display.println(uav_rssi);
+      display.print(F("ALT:   "));  display.println(uav_alt);
+      display.print(F("VBATT: "));  display.println(uav_bat / 100); //show Volts, not mV
+      display.print(F("AMP:   "));  display.println(uav_amp); //this seems to be Amph, not current
+      display.setTextSize(1);
+      display.print(F("OK: "));  display.println(LTM_pkt_ok);
+      display.print(F(" KO: "));  display.println(LTM_pkt_ko);
+      break;
+
+    case 2:
+
+      display.print(F("HDOP: "));      display.println(uav_HDOP);
+      display.print(F("Lat : "));  display.println(uav_lat);
+      display.print(F("Lon : "));  display.println(uav_lon);
+      display.print(F("Home: ")); display.println(home_distance);
+      display.print(F("HDir: ")); display.print(home_heading); display.print(F(" Udir: ")); display.println(uav_heading);
+      display.print(F("HFix: ")); display.print(uav_homefixstatus); display.print(F(" AngH: ")); display.println(home_heading - uav_heading);
+      display.print(F("HLat: ")); display.println(uav_homelat);
+      display.print(F("HLon: ")); display.println(uav_homelon);
+      break;
+    case 3:
       display.print(F("Sats: ")); display.print(uav_satellites_visible);
       display.print(F(" FS: "));  display.print(uav_failsafe);
       display.print(F(" FM: "));  display.println(uav_flightmode);
@@ -175,39 +207,6 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
       display.setTextSize(1);
       display.print(F("OK: "));  display.print(LTM_pkt_ok);
       display.print(F(" KO: "));  display.println(LTM_pkt_ko);
-      break;
-
-    case 1:               // BIG SIZE
-
-      display.setTextSize(2);
-      display.setCursor(0, 0);
-      display.print(F("RSSI:  "));  display.println(uav_rssi);
-      display.print(F("ALT:   "));  display.println(uav_alt);
-      display.print(F("VBATT: "));  display.println(uav_bat/100);//show Volts, not mV
-      display.print(F("AMP:   "));  display.println(uav_amp); //this seems to be Amph, not current
-      display.setTextSize(1);
-      display.print(F("OK: "));  display.println(LTM_pkt_ok);
-      display.print(F(" KO: "));  display.println(LTM_pkt_ko);
-      break;
-
-    case 2:
-
-      display.print(F("HDOP: "));      display.println(uav_HDOP);
-      display.print(F("Lat : "));  display.println(uav_lat);
-      display.print(F("Lon : "));  display.println(uav_lon);
-      display.print(F("Home: ")); display.println(home_distance);
-      display.print(F("HDir: ")); display.println(home_heading);
-      display.print(F("HFix: ")); display.println(uav_homefixstatus);
-      display.print(F("HLat: ")); display.println(uav_homelat);
-      display.print(F("HLon: ")); display.println(uav_homelon);
-      break;
-    case 3:
-      display.setTextSize(2);
-      display.print(F("Home: ")); display.println(home_distance);
-      //display.print(F("HDir: ")); display.println(home_heading);
-      display.print(F("AngH: ")); display.println(home_heading-home bearing);
-      display.print(F("RSSI: "));  display.println(uav_rssi);
-      display.print(F("ALT:  "));  display.println(uav_alt);
       break;
     case 4:
 
@@ -223,9 +222,9 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
 
       display.setTextSize(2);
 
-//      display.print(F("FS:  ")); display.println(uav_failsafe); //removed because Arduino compiler weird error
-//      display.print(F("ARM: ")); display.println(uav_arm);
-//      display.print(F("Err: "));  display.println(ltm_naverror);
+      display.print(F("FS:  ")); display.println(uav_failsafe); 
+      display.print(F("ARM: ")); display.println(uav_arm);
+      display.print(F("Err: "));  display.println(ltm_naverror);
       display.print(F("Flg: "));  display.println(ltm_flags);
 
       break;
@@ -258,7 +257,7 @@ void setup() {
   //pinMode(LED_BUILTIN, OUTPUT); //debug
   pinMode(BUTTON, INPUT);                     // digital input for pushbutton. Connnect to GND the other end of it.
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  //CRIUS CO-16 soldered pins to use adafruit libraries
-  display.setTextColor(WHITE);                
+  display.setTextColor(WHITE);
   display.clearDisplay();
   //blinkled(); blinkled(); //debug
 
