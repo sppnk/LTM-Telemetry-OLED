@@ -272,8 +272,7 @@ void loop() {
   // distance between two GPS points (last and actual) and course of aircraft
   GPS_dist_bearing(&uav_lat, &uav_lon, &last_uav_lat, &last_uav_lon, &ground_distance, &ground_course); 
   
-  //TODO average ground course 
-  
+  //aveaging ground_course value
     static uint16_t ground_courseRawArray[10];
     ground_courseRawArray[(sig++)%10] = ground_course;
     for (uint8_t i=0;i<10;i++) ground_courseRaw += ground_courseRawArray[i];
