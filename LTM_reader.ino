@@ -4,7 +4,7 @@
 //            LTM TELEMETRY OLED READER
 //
 // Simple LTM Telemetry parser and displayer for OLED 128x64 SSD1306
-// Based in code from Kipk (Getthostation)and others. Thanks to Digital Entity, DIvkvu, Bart from EZGUI and all the people
+// Based in code from Kipk (Getthostation)and MWOSD. Thanks to Digital Entity, DIvkvu, Bart from EZGUI and all the people
 // working and testing  INAV.
 // Mainly used for INAV flight controllers
 // LTM telemetry is designed for low baudrates, only downlink. Its best goal is
