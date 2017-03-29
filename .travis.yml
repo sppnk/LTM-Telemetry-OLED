@@ -13,9 +13,9 @@ install:
   - ln -s $PWD /usr/local/share/arduino/libraries/MicroDebug
   
 script:
-  - arduino --verify --board ${BOARD} $PWD/examples/FormattingSerialDebug/FormattingSerialDebug.ino
-  - arduino --verify --board ${BOARD} $PWD/examples/LedDebug/LedDebug.ino
-  - arduino --verify --board ${BOARD} $PWD/examples/SerialDebug/SerialDebug.ino
+  - arduino --verify --board ${BOARD} $PWD/LTM-Telemetry-OLED/tree/test/LTM_reader.ino
+  - arduino --verify --board ${BOARD} $PWD/LTM-Telemetry-OLED/tree/test/LightTelemetry.cpp
+  - arduino --verify --board ${BOARD} $PWD/LTM-Telemetry-OLED/tree/test/LightTelemetry.h
   
 notifications:
   email:
@@ -23,16 +23,16 @@ notifications:
     on_failure: change
     
 env:
- - BOARD=arduino:avr:uno
+# - BOARD=arduino:avr:uno
 # - BOARD=arduino:avr:yun
 # - BOARD=arduino:avr:diecimila:cpu=atmega168
 # - BOARD=arduino:avr:diecimila:cpu=atmega328
- - BOARD=arduino:avr:nano:cpu=atmega168
+# - BOARD=arduino:avr:nano:cpu=atmega168
  - BOARD=arduino:avr:nano:cpu=atmega328
- - BOARD=arduino:avr:mega:cpu=atmega1280
- - BOARD=arduino:avr:mega:cpu=atmega2560
+# - BOARD=arduino:avr:mega:cpu=atmega1280
+ #- BOARD=arduino:avr:mega:cpu=atmega2560
 # - BOARD=arduino:avr:megaADK
- - BOARD=arduino:avr:leonardo
+ #- BOARD=arduino:avr:leonardo
 # - BOARD=arduino:avr:micro
 # - BOARD=arduino:avr:esplora
 # - BOARD=arduino:avr:mini:cpu=atmega168
