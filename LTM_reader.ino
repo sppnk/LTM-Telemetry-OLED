@@ -115,28 +115,28 @@ void read_button() { // detect the button has been pushed (debouncing) and incre
 
 ///////////////////////  distance and direction between two points giving coordinates
 
-void GPS_dist_bearing(int32_t* lat1, int32_t* lon1, int32_t* lat2, int32_t* lon2,uint32_t* dist, int32_t* bearing) {
+void GPS_dist_bearing(int32_t* lat1, int32_t* lon1, int32_t* lat2, int32_t* lon2, uint32_t* dist, int32_t* bearing) {
 
-  float rads = (abs((float) *lat2)/10000000.0)*0.0174532925;
-  double scaleLongDown = cos (rads); //longitude scaling **taking lat2 ?¿
-  
- if (uav_homefixstatus == 1) {        //gps home fix is OK
-   
-  float distLat = *lat2 - *lat1;                                          // difference of latitude in 1/10 000 000 degrees
-  float distLon = (float)(*lon2 - *lon1) * scaleLongDown;
+  if (uav_homefixstatus == 1) {        //gps home fix is OK
+
+    float rads = (abs((float) * lat2)) * 0.0174532925;
+    double scaleLongDown = cos (rads); //longitude scaling **taking lat2 ?¿
+
+    float distLat = *lat2 - *lat1;                                          // difference of latitude in 1/10 000 000 degrees
+    float distLon = (float)(*lon2 - *lon1) * scaleLongDown;
     //distance calculation
-       *dist = sqrt(sq(distLat) + sq(distLon)) * 1.113195/100;            // distance between two points in m
+    *dist = sqrt(sq(distLat) + sq(distLon)) * 1.113195 / 100;          // distance between two points in m
     //direction calculation
-       *bearing = 9000.0f + atan2(-distLat, distLon) * 5729.57795f;      //Convert the output radians to 100xdeg
-        if (*bearing < 0) *bearing += 36000;
-   
-     else                         // we dont have a home fix 
-  {
-         *dist = 0;
-         *bearing = 0;
+    *bearing = (int) round ( 90 + atan2(-distLat, distLon) * 57.2957795);      //Convert the output radians to deg
+    if (*bearing < 0) *bearing += 360;
+
+    else                         // we dont have a home fix
+    {
+      *dist = 0;
+      *bearing = 0;
+    }
+
   }
-      
- }
 }
 
 
@@ -153,12 +153,20 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
   switch (displaypage) {
 
     case 0:                 //MAIN DATA SCREEN
-      display.setTextSize(1);
 
-      display.print(F("HOM "));display.setTextSize(1); display.print(home_distance);   display.setTextSize(1);display.print(F(" DEG "));display.println(home_heading - uav_heading);display.println();//FIXME uav_heading is attitude heading, not course over ground, so it is useless FIXME
-      display.setTextSize(1);display.print(F("RSSI "));  display.setTextSize(2);display.print(uav_rssi); display.setTextSize(1);display.print(F(" ALT "));  display.setTextSize(2);display.println(uav_alt);
-      display.setTextSize(1);display.print(F("VBAT "));  display.setTextSize(2);display.print(uav_bat / 100); display.setTextSize(1);display.print(F(" AMP "));  display.setTextSize(2);display.println(uav_amp);
-           display.setTextSize(1);display.print(F("SATS "));  display.setTextSize(2);display.print(uav_satellites_visible); display.setTextSize(1);display.print(F(" MODE "));  display.setTextSize(2);display.println(uav_flightmode);
+      display.setTextSize(2);
+      display.print(F("Hom  ")); display.println(home_distance);
+      display.print(F("Crs  ")); display.println(ground_course);
+      display.print(F("Hdr  "));  display.println(home_heading);
+      display.print(F("Err  "));  display.println(home_heading - ground_course);
+
+
+      //       display.setTextSize(1);
+      //
+      //      display.print(F("HOM "));display.setTextSize(1); display.print(home_distance);   display.setTextSize(1);display.print(F(" DEG "));display.println(home_heading - ground_course);display.println();//FIXME uav_heading is attitude heading, not course over ground, so it is useless FIXME
+      //      display.setTextSize(1);display.print(F("RSSI "));  display.setTextSize(2);display.print(uav_rssi); display.setTextSize(1);display.print(F(" ALT "));  display.setTextSize(2);display.println(uav_alt);
+      //      display.setTextSize(1);display.print(F("VBAT "));  display.setTextSize(2);display.print(uav_bat / 100); display.setTextSize(1);display.print(F(" mAh "));  display.setTextSize(2);display.println(uav_amp);
+      //           display.setTextSize(1);display.print(F("SATS "));  display.setTextSize(2);display.print(uav_satellites_visible); display.setTextSize(1);display.print(F(" MODE "));  display.setTextSize(2);display.println(uav_flightmode);
 
       break;
 
@@ -169,7 +177,7 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
       display.print(F("RSSI:  "));  display.println(uav_rssi);
       display.print(F("ALT:   "));  display.println(uav_alt);
       display.print(F("VBATT: "));  display.println(uav_bat / 100); //show Volts, not mV
-      display.print(F("AMP:   "));  display.println(uav_amp); //this seems to be Amph, not current
+      display.print(F("mAh:   "));  display.println(uav_amp); //this seems to be Amph, not current
       display.setTextSize(1);
       display.print(F("OK: "));  display.println(LTM_pkt_ok);
       display.print(F(" KO: "));  display.println(LTM_pkt_ko);
@@ -203,19 +211,26 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
       break;
     case 4:
 
-      display.setTextSize(2);
+      display.setTextSize(1);
 
-      display.print(F("Gmode: ")); display.println(uav_gpsmode);
-      display.print(F("Nmod:  ")); display.println(uav_navmode);
-      display.print(F("Nact:  "));  display.println(uav_navaction);
-      display.print(F("WPnr:  "));  display.println(uav_WPnumber);
+      display.print(F("HOM ")); display.setTextSize(1); display.print(home_distance);   display.setTextSize(1); display.print(F(" DEG ")); display.println(home_heading - ground_course);  //FIXME uav_heading is attitude heading, not course over ground, so it is useless FIXME
+      display.print(F("COU ")); display.setTextSize(1); display.print(ground_course);   display.setTextSize(1); display.print(F(" HEAD ")); display.println(home_heading);  
+      display.setTextSize(1); display.print(F("RSSI "));  display.setTextSize(2); display.print(uav_rssi); display.setTextSize(1); display.print(F(" ALT "));  display.setTextSize(2); display.println(uav_alt);
+      display.setTextSize(1); display.print(F("VBAT "));  display.setTextSize(2); display.print(uav_bat / 100); display.setTextSize(1); display.print(F(" mAh "));  display.setTextSize(1); display.println(uav_amp);    display.println();        
+      display.setTextSize(1); display.print(F("SATS "));  display.setTextSize(2); display.print(uav_satellites_visible); display.setTextSize(1); display.print(F(" MODE "));  display.setTextSize(2); display.println(uav_flightmode);
+
+
+      //      display.print(F("Gmode: ")); display.println(uav_gpsmode);
+      //      display.print(F("Nmod:  ")); display.println(uav_navmode);
+      //      display.print(F("Nact:  "));  display.println(uav_navaction);
+      //      display.print(F("WPnr:  "));  display.println(uav_WPnumber);
 
       break;
     case 5:
 
       display.setTextSize(2);
 
-      display.print(F("FS:  ")); display.println(uav_failsafe); 
+      display.print(F("FS:  ")); display.println(uav_failsafe);
       display.print(F("ARM: ")); display.println(uav_arm);
       display.print(F("Err: "));  display.println(ltm_naverror);
       display.print(F("Flg: "));  display.println(ltm_flags);
@@ -261,27 +276,28 @@ void setup() {
 void loop() {
 
   //while (ltmSerial.available()) {Serial.print(ltmSerial.read());}  //debug
-  
+
   int32_t last_uav_lat = uav_lat; // last values of GPS for calculation of course over ground
   int32_t last_uav_lon = uav_lon;
+
   uint16_t ground_courseRaw = 0;
   static uint8_t sig = 0;
-  
+
   ltm_read();           //read LTM telemetry
-  
+
   // distance between two GPS points (last and actual) and course of aircraft
-  GPS_dist_bearing(&uav_lat, &uav_lon, &last_uav_lat, &last_uav_lon, &ground_distance, &ground_course); 
-  
+  GPS_dist_bearing(&uav_lat, &uav_lon, &last_uav_lat, &last_uav_lon, &ground_distance, &ground_course);
+
   //aveaging ground_course value
-    static uint16_t ground_courseRawArray[10];
-    ground_courseRawArray[(sig++)%10] = ground_course;
-    for (uint8_t i=0;i<10;i++) ground_courseRaw += ground_courseRawArray[i];
-    ground_course = ground_courseRaw / 10;  
-  
+  static uint16_t ground_courseRawArray[100];
+  ground_courseRawArray[(sig++) % 10] = ground_course;
+  for (uint8_t i = 0; i < 10; i++) ground_courseRaw += ground_courseRawArray[i];
+  ground_course = ground_courseRaw / 10;
+
   //TODO measure millis() just to experiment calculating SPEED and comparing with GPS speed from LTM
   GPS_dist_bearing(&uav_lat, &uav_lon, &uav_homelat, &uav_homelon, &home_distance, &home_heading);        // calculate some variables from LTM data
 
-  
+
   read_button();        // check pushbutton and increase page counter
 
   display_oled();       // display data in oled screen
