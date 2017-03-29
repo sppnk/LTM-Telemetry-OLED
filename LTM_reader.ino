@@ -120,17 +120,17 @@ void GPS_dist_bearing(int32_t* lat1, int32_t* lon1, int32_t* lat2, int32_t* lon2
   float rads = (abs((float) *lat2)/10000000.0)*0.0174532925;
   double scaleLongDown = cos (rads); //longitude scaling **taking lat2 ?¿
   
- if (uav_homefixstatus == 1) {
+ if (uav_homefixstatus == 1) {        //gps home fix is OK
    
   float distLat = *lat2 - *lat1;                                          // difference of latitude in 1/10 000 000 degrees
   float distLon = (float)(*lon2 - *lon1) * scaleLongDown;
     //distance calculation
-       *dist = sqrt(sq(distLat) + sq(distLon)) * 1.113195;               // distance between two points
+       *dist = sqrt(sq(distLat) + sq(distLon)) * 1.113195/100;            // distance between two points in m
     //direction calculation
        *bearing = 9000.0f + atan2(-distLat, distLon) * 5729.57795f;      //Convert the output radians to 100xdeg
         if (*bearing < 0) *bearing += 36000;
    
-     else
+     else                         // we dont have a home fix 
   {
          *dist = 0;
          *bearing = 0;
