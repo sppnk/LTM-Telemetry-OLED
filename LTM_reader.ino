@@ -113,11 +113,11 @@ void read_button() { // detect the button has been pushed (debouncing) and incre
   button_laststate = button_read;
 }
 
-/////////////////////// calculations
+///////////////////////  distance and direction between two points giving coordinates
 
 void GPS_dist_bearing(int32_t* lat1, int32_t* lon1, int32_t* lat2, int32_t* lon2,uint32_t* dist, int32_t* bearing) {
  
-  float distLat = *lat2 - *lat1;                                 // difference of latitude in 1/10 000 000 degrees
+  float distLat = *lat2 - *lat1;                                          // difference of latitude in 1/10 000 000 degrees
   float distLon = (float)(*lon2 - *lon1) * scaleLongDown;
     if (uav_homefixstatus == 1) {
        *dist = sqrt(sq(distLat) + sq(distLon)) * 1.113195;               // distance between two points
@@ -177,7 +177,7 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
       display.print(F("Lon : "));  display.println(uav_lon);
       display.print(F("Home: ")); display.println(home_distance);
       display.print(F("HDir: ")); display.print(home_heading); display.print(F(" Udir: ")); display.println(uav_heading);
-      display.print(F("HFix: ")); display.print(uav_homefixstatus); display.print(F(" AngH: ")); display.println(home_heading - uav_heading);
+      display.print(F("HFix: ")); display.print(uav_homefixstatus); display.print(F(" AngH: ")); display.println(home_heading - ground_course);
       display.print(F("HLat: ")); display.println(uav_homelat);
       display.print(F("HLon: ")); display.println(uav_homelon);
       break;
@@ -256,12 +256,17 @@ void setup() {
 void loop() {
 
   //while (ltmSerial.available()) {Serial.print(ltmSerial.read());}  //debug
-
+  
+  last_uav_lat = uav_lat; // last values of GPS for calculation of course over ground
+  last_uav_lon = uav_lon;
 
   ltm_read();           //read LTM telemetry
+  
+  GPS_dist_bearing(&uav_lat, &uav_lon, &last_uav_lat, &last_uav_lon, &ground_distance, &ground_course);  // distance between two GPS points (last and actual) and course of aircraft
 
-  GPS_dist_bearing(&uav_lat, &uav_lon, uav_homelat, &uav_homelon, &home_distance, &home_heading);        // calculate some variables from LTM data
+  GPS_dist_bearing(&uav_lat, &uav_lon, &uav_homelat, &uav_homelon, &home_distance, &home_heading);        // calculate some variables from LTM data
 
+  
   read_button();        // check pushbutton and increase page counter
 
   display_oled();       // display data in oled screen
