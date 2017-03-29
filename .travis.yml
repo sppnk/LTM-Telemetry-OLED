@@ -10,7 +10,7 @@ before_install:
   - sudo ln -s /usr/local/share/arduino/arduino /usr/local/bin/arduino
   
 install:
-  - ln -s $PWD /usr/local/share/arduino/libraries/MicroDebug
+  - ln -s $PWD /usr/local/share/arduino/libraries/Adafruit_SSD1306.h
   
 script:
   - arduino --verify --board ${BOARD} $PWD/LTM-Telemetry-OLED/tree/test/LTM_reader.ino
