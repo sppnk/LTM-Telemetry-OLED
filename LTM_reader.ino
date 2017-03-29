@@ -115,38 +115,26 @@ void read_button() { // detect the button has been pushed (debouncing) and incre
 
 /////////////////////// calculations
 
-void updateVars() { // calculate some variables from LTM raw data
+void GPS_dist_bearing(int32_t* lat1, int32_t* lon1, int32_t* lat2, int32_t* lon2,uint32_t* dist, int32_t* bearing) {
+ 
+  float distLat = *lat2 - *lat1;                                 // difference of latitude in 1/10 000 000 degrees
+  float distLon = (float)(*lon2 - *lon1) * scaleLongDown;
+    if (uav_homefixstatus == 1) {
+       *dist = sqrt(sq(distLat) + sq(distLon)) * 1.113195;               // distance between two points
 
-  float dstlon, dstlat;
-
-  //shrinking factor for longitude going to poles direction
-
-  float rads = fabs(uav_homelat) * 0.0174532925;
-  double scaleLongDown = cos(rads);
-  double scaleLongUp   = 1.0f / cos(rads);
-
-  if (uav_homefixstatus == 1) {
-
-    // Distance to Home
-
-    dstlat = fabs(uav_homelat - uav_lat);
-    dstlon = fabs(uav_homelon - uav_lon) * scaleLongDown;
-    home_distance = sqrt(sq(dstlat) + sq(dstlon)) * 1.113195 / 100 ;            // from cm to m (testing)
-
-    // Direction to Home
-
-    home_heading = (int) round (90 + (atan2(dstlat, -dstlon) * 57.295775));       //absolut home direction (testing)
-    if (home_heading < 0) home_heading += 360;                                    //normalization
-    home_heading = home_heading - 180;                                            //absolut return direction
-    if (home_heading < 0) home_heading += 360;                                    //normalization FIXME
-  }
-  else
+       *bearing = 9000.0f + atan2(-distLat, distLon) * 5729.57795f;      //Convert the output radians to 100xdeg
+        if (*bearing < 0) *bearing += 36000;
+   
+     else
   {
-    home_distance = 0;
-    home_heading = 0;
+         *dist = 0;
+         *bearing = 0;
   }
-
+      
+ }
 }
+
+
 
 ////////////////////////////////////// display OLED
 
@@ -272,7 +260,7 @@ void loop() {
 
   ltm_read();           //read LTM telemetry
 
-  updateVars();         // calculate some variables from LTM data
+  GPS_dist_bearing(&uav_lat, &uav_lon, uav_homelat, &uav_homelon, &home_distance, &home_heading);        // calculate some variables from LTM data
 
   read_button();        // check pushbutton and increase page counter
 
