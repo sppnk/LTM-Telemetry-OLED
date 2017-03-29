@@ -116,6 +116,9 @@ void read_button() { // detect the button has been pushed (debouncing) and incre
 ///////////////////////  distance and direction between two points giving coordinates
 
 void GPS_dist_bearing(int32_t* lat1, int32_t* lon1, int32_t* lat2, int32_t* lon2,uint32_t* dist, int32_t* bearing) {
+
+  float rads = (abs((float) *lat2)/10000000.0)*0.0174532925;
+  double scaleLongDown = cos (rads);
  
   float distLat = *lat2 - *lat1;                                          // difference of latitude in 1/10 000 000 degrees
   float distLon = (float)(*lon2 - *lon1) * scaleLongDown;
@@ -257,8 +260,8 @@ void loop() {
 
   //while (ltmSerial.available()) {Serial.print(ltmSerial.read());}  //debug
   
-  last_uav_lat = uav_lat; // last values of GPS for calculation of course over ground
-  last_uav_lon = uav_lon;
+  int32_t last_uav_lat = uav_lat; // last values of GPS for calculation of course over ground
+  int32_t last_uav_lon = uav_lon;
 
   ltm_read();           //read LTM telemetry
   

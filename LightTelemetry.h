@@ -28,7 +28,7 @@ int32_t       ground_course = 0; //course over ground
 int32_t       ground_distance = 0; //distance bettween two consecutive GPS points in actual course (unused) // TODO use this to calc SPEED
 uint8_t       uav_osd_on = 0; // allways 1
 uint32_t      home_distance = 0; // distante to home
-int16_t       home_heading = 0; // heading to home
+int32_t       home_heading = 0; // heading to home
 uint8_t       uav_homefixstatus = 0; // 1=homefix ok
 uint8_t       uav_gpsmode = 0;
 uint8_t       uav_navmode = 0;
