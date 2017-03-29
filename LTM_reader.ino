@@ -263,7 +263,8 @@ void loop() {
   ltm_read();           //read LTM telemetry
   
   GPS_dist_bearing(&uav_lat, &uav_lon, &last_uav_lat, &last_uav_lon, &ground_distance, &ground_course);  // distance between two GPS points (last and actual) and course of aircraft
-
+  //TODO average ground course over 2 secs.
+  //TODO measure millis() just to experiment calculating SPEED and comparing with GPS speed from LTM
   GPS_dist_bearing(&uav_lat, &uav_lon, &uav_homelat, &uav_homelon, &home_distance, &home_heading);        // calculate some variables from LTM data
 
   
