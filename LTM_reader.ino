@@ -162,7 +162,7 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
     case 0:                 //MAIN DATA SCREEN
       display.setTextSize(1);
 
-      display.print(F("HOM "));display.setTextSize(1); display.print(home_distance);   display.setTextSize(1);display.print(F(" DEG "));display.println(home_heading - uav_heading);display.println();
+      display.print(F("HOM "));display.setTextSize(1); display.print(home_distance);   display.setTextSize(1);display.print(F(" DEG "));display.println(home_heading - uav_heading);display.println();//FIXME uav_heading is attitude heading, not course over ground, so it is useless FIXME
       display.setTextSize(1);display.print(F("RSSI "));  display.setTextSize(2);display.print(uav_rssi); display.setTextSize(1);display.print(F(" ALT "));  display.setTextSize(2);display.println(uav_alt);
       display.setTextSize(1);display.print(F("VBAT "));  display.setTextSize(2);display.print(uav_bat / 100); display.setTextSize(1);display.print(F(" AMP "));  display.setTextSize(2);display.println(uav_amp);
            display.setTextSize(1);display.print(F("SATS "));  display.setTextSize(2);display.print(uav_satellites_visible); display.setTextSize(1);display.print(F(" MODE "));  display.setTextSize(2);display.println(uav_flightmode);
