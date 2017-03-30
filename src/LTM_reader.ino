@@ -130,7 +130,7 @@ void GPS_dist_bearing(int32_t* lat1, int32_t* lon1, int32_t* lat2, int32_t* lon2
     //direction calculation
     *bearing = (int) round ( 90 + atan2(-distLat, distLon) * 57.2957795);      //bearing, convert the output radians to deg
     if (*bearing < 0) *bearing += 360;
-
+  }
     else                         // we dont have a home fix
     {
       *dist = 0;
@@ -138,7 +138,7 @@ void GPS_dist_bearing(int32_t* lat1, int32_t* lon1, int32_t* lat2, int32_t* lon2
     }
 
   }
-}
+
 
 
 
