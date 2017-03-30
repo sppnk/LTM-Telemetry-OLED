@@ -69,7 +69,7 @@ Adafruit_SSD1306 display(OLED_RESET);
 #include <AltSoftSerial.h>              //  This library works fine
 AltSoftSerial ltmSerial(8, 9);          //8-RX, 9-TX
 
-#include "Lighttelemetry.cpp"
+#include <Lighttelemetry.cpp>
 #include <stdint.h>
 
 //some global variables
