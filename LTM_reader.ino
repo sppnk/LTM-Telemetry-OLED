@@ -59,7 +59,8 @@ Adafruit_SSD1306 display(OLED_RESET);
 #define PROTOCOL_LIGHTTELEMETRY
 #define BUTTON        4
 #define OLED_PANELS   6
-#define LTM_BAUDS     9600                       // the lower the better
+#define LTM_BAUDS     9600                       // the lower the better. 
+
 
 //#include <SoftwareSerial.h>                   //this Software serial library gives many problmems
 //SoftwareSerial ltmSerial(8, 9);               //8-RX, 9-TX
@@ -119,15 +120,15 @@ void GPS_dist_bearing(int32_t* lat1, int32_t* lon1, int32_t* lat2, int32_t* lon2
 
   if (uav_homefixstatus == 1) {        //gps home fix is OK
 
-    float rads = (abs((float) * lat2)) * 0.0174532925;
-    double scaleLongDown = cos (rads); //longitude scaling **taking lat2 ?¿
+    float rads = (abs((float) * lat2)) * 0.0174532925; // latitude to radians
+    double scaleLongDown = cos (rads); // calculate longitude scaling **taking lat2 ? why not lat1 ?
 
     float distLat = *lat2 - *lat1;                                          // difference of latitude in 1/10 000 000 degrees
     float distLon = (float)(*lon2 - *lon1) * scaleLongDown;
     //distance calculation
-    *dist = sqrt(sq(distLat) + sq(distLon)) * 1.113195 / 100;          // distance between two points in m
+    *dist = sqrt(sq(distLat) + sq(distLon)) * 1.113195 / 100;          // distance between two GPS points in m
     //direction calculation
-    *bearing = (int) round ( 90 + atan2(-distLat, distLon) * 57.2957795);      //Convert the output radians to deg
+    *bearing = (int) round ( 90 + atan2(-distLat, distLon) * 57.2957795);      //bearing, convert the output radians to deg
     if (*bearing < 0) *bearing += 360;
 
     else                         // we dont have a home fix
@@ -155,10 +156,10 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
     case 0:                 //MAIN DATA SCREEN
 
       display.setTextSize(2);
-      display.print(F("Hom  ")); display.println(home_distance);
-      display.print(F("Crs  ")); display.println(ground_course);
-      display.print(F("Hdr  "));  display.println(home_heading);
-      display.print(F("Err  "));  display.println(home_heading - ground_course);
+      display.print(F("Hom  ")); display.println(home_distance); // distance to home
+      display.print(F("Crs  ")); display.println(ground_course); //calculated ground course
+      display.print(F("Hdr  "));  display.println(home_heading); // calculated home heading
+      display.print(F("Uhd  "));  display.println(uav_heading); //ground course from LTM if there is no mag 
 
 
       //       display.setTextSize(1);
