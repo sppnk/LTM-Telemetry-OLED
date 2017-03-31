@@ -120,7 +120,7 @@ void GPS_dist_bearing(int32_t* lat1, int32_t* lon1, int32_t* lat2, int32_t* lon2
 
   if (uav_homefixstatus == 1) {        //gps home fix is OK
 
-    float rads = (abs((float) * lat2)) * 0.0174532925; // latitude to radians
+    float rads = (abs((float) * lat2) / 10000000.0) * 0.0174532925; // latitude to radians
     double scaleLongDown = cos (rads); // calculate longitude scaling **taking lat2 ? why not lat1 ?
 
     float distLat = *lat2 - *lat1;                                          // difference of latitude in 1/10 000 000 degrees
