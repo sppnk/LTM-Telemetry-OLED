@@ -157,9 +157,9 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
 
       display.setTextSize(2);
       display.print(F("Hom  ")); display.println(home_distance); // distance to home
-      display.print(F("Crs  ")); display.println(ground_course); //calculated ground course
+      display.print(F("Crs  ")); display.println(ground_course); //calculated ground course FIXME
       display.print(F("Hdr  "));  display.println(home_heading); // calculated home heading
-      display.print(F("Uhd  "));  display.println(uav_heading); //ground course from LTM if there is no mag
+      display.print(F("Uhd  "));  display.println(uav_heading);  //ground course from LTM if there is no mag
 
 
       //       display.setTextSize(1);
@@ -290,7 +290,7 @@ void loop() {
   GPS_dist_bearing(&uav_lat, &uav_lon, &last_uav_lat, &last_uav_lon, &ground_distance, &ground_course);
 
   //aveaging ground_course value
-  static uint16_t ground_courseRawArray[100];
+  static uint16_t ground_courseRawArray[10];
   ground_courseRawArray[(sig++) % 10] = ground_course;
   for (uint8_t i = 0; i < 10; i++) ground_courseRaw += ground_courseRawArray[i];
   ground_course = ground_courseRaw / 10;
