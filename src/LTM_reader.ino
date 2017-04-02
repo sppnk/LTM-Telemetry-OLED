@@ -59,7 +59,7 @@ Adafruit_SSD1306 display(OLED_RESET);
 #define PROTOCOL_LIGHTTELEMETRY
 #define BUTTON        4
 #define OLED_PANELS   6
-#define LTM_BAUDS     9600                       // the lower the better. 
+#define LTM_BAUDS     9600                       // the lower the better.
 
 
 //#include <SoftwareSerial.h>                   //this Software serial library gives many problmems
@@ -159,7 +159,7 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
       display.print(F("Hom  ")); display.println(home_distance); // distance to home
       display.print(F("Crs  ")); display.println(ground_course); //calculated ground course
       display.print(F("Hdr  "));  display.println(home_heading); // calculated home heading
-      display.print(F("Uhd  "));  display.println(uav_heading); //ground course from LTM if there is no mag 
+      display.print(F("Uhd  "));  display.println(uav_heading); //ground course from LTM if there is no mag
 
 
       //       display.setTextSize(1);
@@ -215,9 +215,9 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
       display.setTextSize(1);
 
       display.print(F("HOM ")); display.setTextSize(1); display.print(home_distance);   display.setTextSize(1); display.print(F(" DEG ")); display.println(home_heading - ground_course);  //FIXME uav_heading is attitude heading, not course over ground, so it is useless FIXME
-      display.print(F("COU ")); display.setTextSize(1); display.print(ground_course);   display.setTextSize(1); display.print(F(" HEAD ")); display.println(home_heading);  
+      display.print(F("COU ")); display.setTextSize(1); display.print(ground_course);   display.setTextSize(1); display.print(F(" HEAD ")); display.println(home_heading);
       display.setTextSize(1); display.print(F("RSSI "));  display.setTextSize(2); display.print(uav_rssi); display.setTextSize(1); display.print(F(" ALT "));  display.setTextSize(2); display.println(uav_alt);
-      display.setTextSize(1); display.print(F("VBAT "));  display.setTextSize(2); display.print(uav_bat / 100); display.setTextSize(1); display.print(F(" mAh "));  display.setTextSize(1); display.println(uav_amp);    display.println();        
+      display.setTextSize(1); display.print(F("VBAT "));  display.setTextSize(2); display.print(uav_bat / 100); display.setTextSize(1); display.print(F(" mAh "));  display.setTextSize(1); display.println(uav_amp);    display.println();
       display.setTextSize(1); display.print(F("SATS "));  display.setTextSize(2); display.print(uav_satellites_visible); display.setTextSize(1); display.print(F(" MODE "));  display.setTextSize(2); display.println(uav_flightmode);
 
 

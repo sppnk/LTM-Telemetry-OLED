@@ -9,6 +9,7 @@ void ltm_check();
 #define LIGHTTELEMETRY_OFRAME 0x4F //O  Origin data (home lon, home lat, homefix)
 #define LIGHTTELEMETRY_NFRAME 0x4E //N  NAVIGATION data
 #define LIGHTTELEMETRY_XFRAME 0x58 //X  EXTRA FRAME
+
 #define LIGHTTELEMETRY_GFRAMELENGTH 18
 #define LIGHTTELEMETRY_AFRAMELENGTH 10
 #define LIGHTTELEMETRY_SFRAMELENGTH 11
@@ -24,7 +25,7 @@ int32_t       LTM_pkt_ok = 0;   //good LTM packet counter
 int32_t       uav_homelat = 0; //home latitude
 int32_t       uav_homelon = 0; //home longitude
 int32_t       uav_homealt = 0; //home altitude
-int32_t       ground_course = 0; //course over ground 
+int32_t       ground_course = 0; //course over ground
 int32_t       ground_distance = 0; //distance bettween two consecutive GPS points in actual course (unused) // TODO use this to calc SPEED
 uint8_t       uav_osd_on = 0; // allways 1
 uint32_t      home_distance = 0; // distante to home
@@ -79,4 +80,3 @@ boolean gps_fix      = false;
 //boolean telemetry_ok = false;
 //boolean home_pos     = false;
 //boolean home_bear    = false;
-
