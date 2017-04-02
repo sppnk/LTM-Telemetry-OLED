@@ -33,11 +33,10 @@
 //
 //
 // TODO:
-// - code is crappy, althought it works, a clean it up is neccesary
 // - add buzzer to create vario
 // - add buzzer to create distance, altitude, battery or RSSI audible alarms
 // - add arrow graphic for bearing home instead the numerical value, (to fly by instruments if video is lost).
-// - many more TODOs
+//
 //
 
 #ifdef membug
@@ -154,14 +153,18 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
   switch (displaypage) {
 
     case 0:                 //MAIN DATA SCREEN
-
-      display.setTextSize(2);
-      display.print(F("Hom  ")); display.println(home_distance); // distance to home
-      display.print(F("Crs  ")); display.println(ground_course); //calculated ground course FIXME
-      display.print(F("Hdr  "));  display.println(home_heading); // calculated home heading
-      display.print(F("Uhd  "));  display.println(uav_heading);  //ground course from LTM if there is no mag
-
-
+        display.setTextSize(1);display.print(F("H "));
+        display.setTextSize(2);
+        display.print(home_distance); display.print(F(" ")); display.println(home_heading - uav_heading); //calculated ground course
+      // display.print(F("Hdr  "));  display.println(home_heading); // calculated home heading
+      // display.print(F("Uhd  "));  display.println(uav_heading);  //ground course from LTM if there is no mag
+        display.setTextSize(1);display.print(F("RSSI "));display.setTextSize(2);  display.print(uav_rssi);
+        display.setTextSize(1);display.print(F(" ALT "));display.setTextSize(2);  display.println(uav_alt);
+        display.setTextSize(1);display.print(F("VBAT "));  display.setTextSize(2);display.print(uav_bat / 100); //show Volts, not mV
+        display.setTextSize(1);display.print(F(" mAh "));  display.println(uav_amp);display.println();
+        display.setTextSize(1);display.println();
+        display.print(F("Sat ")); display.print(uav_satellites_visible);
+        display.print(F(" SPD "));  display.print(uav_groundspeed);display.print(F(" M "));  display.println(uav_flightmode);
       //       display.setTextSize(1);
       //
       //      display.print(F("HOM "));display.setTextSize(1); display.print(home_distance);   display.setTextSize(1);display.print(F(" DEG "));display.println(home_heading - ground_course);display.println();//FIXME uav_heading is attitude heading, not course over ground, so it is useless FIXME
@@ -171,10 +174,9 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
 
       break;
 
-    case 1:               // BIG SIZE
+    case 1:
 
       display.setTextSize(2);
-      display.setCursor(0, 0);
       display.print(F("RSSI:  "));  display.println(uav_rssi);
       display.print(F("ALT:   "));  display.println(uav_alt);
       display.print(F("VBATT: "));  display.println(uav_bat / 100); //show Volts, not mV
@@ -279,10 +281,10 @@ void loop() {
   //while (ltmSerial.available()) {Serial.print(ltmSerial.read());}  //debug
 
   int32_t last_uav_lat = uav_lat; // last values of GPS for calculation of course over ground
-  int32_t last_uav_lon = uav_lon;
+  int32_t last_uav_lon = uav_lon; //this only works if uav is moving FIXME
 
-  // uint16_t ground_courseRaw = 0;
-  // static uint8_t sig = 0;
+  uint16_t ground_courseRaw = 0;
+  static uint8_t sig = 0;
 
   ltm_read();           //read LTM telemetry
 
@@ -290,11 +292,12 @@ void loop() {
   GPS_dist_bearing(&last_uav_lat, &last_uav_lon, &uav_lat, &uav_lon, &ground_distance, &ground_course);
   // ground_course -= 180; //
   //   if (ground_course < 0){ ground_course += 360;}
+
   //aveaging ground_course value
-  // static uint16_t ground_courseRawArray[10];
-  // ground_courseRawArray[(sig++) % 10] = ground_course;
-  // for (uint8_t i = 0; i < 10; i++) ground_courseRaw += ground_courseRawArray[i];
-  // ground_course = ground_courseRaw / 10;
+  static uint16_t ground_courseRawArray[10];
+  ground_courseRawArray[(sig++) % 10] = ground_course;
+  for (uint8_t i = 0; i < 10; i++) ground_courseRaw += ground_courseRawArray[i];
+  ground_course = ground_courseRaw / 10;
 
   //TODO measure millis() just to experiment calculating SPEED and comparing with GPS speed from LTM
   GPS_dist_bearing(&uav_lat, &uav_lon, &uav_homelat, &uav_homelon, &home_distance, &home_heading);        // calculate some variables from LTM data
