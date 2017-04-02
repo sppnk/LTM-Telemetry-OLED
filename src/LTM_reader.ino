@@ -281,19 +281,20 @@ void loop() {
   int32_t last_uav_lat = uav_lat; // last values of GPS for calculation of course over ground
   int32_t last_uav_lon = uav_lon;
 
-  uint16_t ground_courseRaw = 0;
-  static uint8_t sig = 0;
+  // uint16_t ground_courseRaw = 0;
+  // static uint8_t sig = 0;
 
   ltm_read();           //read LTM telemetry
 
   // distance between two GPS points (last and actual) and course of aircraft
-  GPS_dist_bearing(&uav_lat, &uav_lon, &last_uav_lat, &last_uav_lon, &ground_distance, &ground_course);
-
+  GPS_dist_bearing(&last_uav_lat, &last_uav_lon, &uav_lat, &uav_lon, &ground_distance, &ground_course);
+  // ground_course -= 180; //
+  //   if (ground_course < 0){ ground_course += 360;}
   //aveaging ground_course value
-  static uint16_t ground_courseRawArray[10];
-  ground_courseRawArray[(sig++) % 10] = ground_course;
-  for (uint8_t i = 0; i < 10; i++) ground_courseRaw += ground_courseRawArray[i];
-  ground_course = ground_courseRaw / 10;
+  // static uint16_t ground_courseRawArray[10];
+  // ground_courseRawArray[(sig++) % 10] = ground_course;
+  // for (uint8_t i = 0; i < 10; i++) ground_courseRaw += ground_courseRawArray[i];
+  // ground_course = ground_courseRaw / 10;
 
   //TODO measure millis() just to experiment calculating SPEED and comparing with GPS speed from LTM
   GPS_dist_bearing(&uav_lat, &uav_lon, &uav_homelat, &uav_homelon, &home_distance, &home_heading);        // calculate some variables from LTM data
