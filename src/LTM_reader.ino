@@ -76,7 +76,7 @@ AltSoftSerial ltmSerial(8, 9);          //8-RX, 9-TX
 
 #include <LightTelemetry.cpp>           //LTM definitions and functions
 
-//#include <NewTone.h>                    // buzzer non blocking library
+#include <NewTone.h>                    // buzzer non blocking library
 #include <stdint.h>
 
 //some global variables
