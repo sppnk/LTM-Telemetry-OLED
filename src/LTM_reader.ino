@@ -255,6 +255,7 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
 
 void buzzer (){
 
+  
 unsigned long currentMillis = millis();
  
   if(currentMillis - previousMillis > BUZZER_HZ) {
@@ -263,12 +264,11 @@ unsigned long currentMillis = millis();
  
     // if the LED is off turn it on and vice-versa:
    SpkrState = !SpkrState;              // "toggles" the state
-   digitalWrite(BUZZER_PIN, SpkrState);   // sets the ZPKR based on ledState
+   digitalWrite(SPKR_PIN, SpkrState);   // sets the ZPKR based on ledState
    // save the "current" time
    previousMillis = millis();
  
 
-if ((uav_bat/100) < 105) {    ;}
 };
 
 
@@ -332,7 +332,8 @@ void loop() {
 
   display_oled();       // display data in oled screen
   
-  buzzer ();            // buzzer alarms control
+
+   buzzer ();            // buzzer alarms control
 
 
 
