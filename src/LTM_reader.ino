@@ -61,6 +61,7 @@ Adafruit_SSD1306 display(OLED_RESET);
 #define LTM_BAUDS             9600          // the lower the better.
 #define AVERAGE_ITERATIONS     10           //iterations to average 'ground_course' calculation FIXME
 #define SPKR_PIN                5           //buzzer pin nano328
+#define BUZZER_HZ             50            //buzzer Hz
 
 
 //#include <SoftwareSerial.h>                   //this Software serial library gives many problmems
@@ -254,10 +255,20 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
 
 void buzzer (){
 
+unsigned long currentMillis = millis();
+ 
+  if(currentMillis - previousMillis > BUZZER_HZ) {
+    // save the last time you blinked the LED 
+    previousMillis = currentMillis;   
+ 
+    // if the LED is off turn it on and vice-versa:
+   SpkrState = !SpkrState;              // "toggles" the state
+   digitalWrite(BUZZER_PIN, SpkrState);   // sets the ZPKR based on ledState
+   // save the "current" time
+   previousMillis = millis();
+ 
+
 if ((uav_bat/100) < 105) {    ;}
-
-
-
 };
 
 
