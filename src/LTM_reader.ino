@@ -252,6 +252,15 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
 
 }
 
+void buzzer (){
+
+if ((uav_bat/100) < 105) {    ;}
+
+
+
+};
+
+
 //void blinkled() { // led for debugging. removed to save memory
 //
 //  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
@@ -311,6 +320,8 @@ void loop() {
   read_button();        // check pushbutton and increase page counter
 
   display_oled();       // display data in oled screen
+  
+  buzzer ();            // buzzer alarms control
 
 
 
