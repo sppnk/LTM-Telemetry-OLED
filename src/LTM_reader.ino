@@ -55,6 +55,19 @@ Adafruit_SSD1306 display(OLED_RESET);
 #error("Height incorrect, please fix Adafruit_SSD1306.h!");
 #endif
 
+//#include <SoftwareSerial.h>                   //this Software serial library gives many problmems
+//SoftwareSerial ltmSerial(8, 9);               //8-RX, 9-TX
+//Serial ltmserial;
+
+#include <NewTone.h>                    // buzzer non blocking library
+
+#include <AltSoftSerial.h>              //  This library works fine
+AltSoftSerial ltmSerial(8, 9);          //8-RX, 9-TX
+
+#include <LightTelemetry.cpp>           //LTM definitions and functions
+#include <stdint.h>
+
+//defines
 #define PROTOCOL_LIGHTTELEMETRY
 #define BUTTON_PIN            4             //button pin in nano328
 #define OLED_PANELS           6             //number of telemetry screens
@@ -62,17 +75,8 @@ Adafruit_SSD1306 display(OLED_RESET);
 #define AVERAGE_ITERATIONS     10           //iterations to average 'ground_course' calculation FIXME
 #define SPKR_PIN                5           //buzzer pin nano328
 #define BUZZER_HZ             50            //buzzer Hz
-
-
-//#include <SoftwareSerial.h>                   //this Software serial library gives many problmems
-//SoftwareSerial ltmSerial(8, 9);               //8-RX, 9-TX
-//Serial ltmserial;
-
-#include <AltSoftSerial.h>              //  This library works fine
-AltSoftSerial ltmSerial(8, 9);          //8-RX, 9-TX
-
-#include <LightTelemetry.cpp>
-#include <stdint.h>
+#define UAV_BAT_ALARM_TONE_PITCH 250
+#define UAV_BAT_ALARM_TONE_DURATION  500
 
 //some global variables
 uint8_t     displaypage = 0;
@@ -255,19 +259,7 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
 
 void buzzer (){
 
-  
-unsigned long currentMillis = millis();
- 
-  if(currentMillis - previousMillis > BUZZER_HZ) {
-    // save the last time you blinked the LED 
-    previousMillis = currentMillis;   
- 
-    // if the LED is off turn it on and vice-versa:
-   SpkrState = !SpkrState;              // "toggles" the state
-   digitalWrite(SPKR_PIN, SpkrState);   // sets the ZPKR based on ledState
-   // save the "current" time
-   previousMillis = millis();
- 
+if ((uav_bat/100) <= 10.5){NewTone(SPKR_PIN, UAV_BAT_ALARM_TONE_PITCH, UAV_BAT_ALARM_TONE_DURATION);}
 
 };
 
@@ -327,14 +319,10 @@ void loop() {
   //TODO measure millis() just to experiment calculating SPEED and comparing with GPS speed from LTM
   GPS_dist_bearing(&uav_lat, &uav_lon, &uav_homelat, &uav_homelon, &home_distance, &home_heading);        // calculate some variables from LTM data
 
-
   read_button();        // check pushbutton and increase page counter
 
   display_oled();       // display data in oled screen
   
-
-   buzzer ();            // buzzer alarms control
-
-
+  buzzer ();            // buzzer alarms control
 
 }
