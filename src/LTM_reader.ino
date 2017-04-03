@@ -258,11 +258,11 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
 
 }
 
-//void buzzer (){
+void buzzer (){
 
-//if ((uav_bat/100) <= 10.5){NewTone(SPKR_PIN, UAV_BAT_ALARM_TONE_PITCH, UAV_BAT_ALARM_TONE_DURATION);}
+if ((uav_bat/100) <= 10.5){NewTone(SPKR_PIN, UAV_BAT_ALARM_TONE_PITCH, UAV_BAT_ALARM_TONE_DURATION);}
 
-//};
+};
 
 
 //void blinkled() { // led for debugging. removed to save memory
