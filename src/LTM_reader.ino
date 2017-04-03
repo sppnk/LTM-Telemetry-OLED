@@ -56,10 +56,11 @@ Adafruit_SSD1306 display(OLED_RESET);
 #endif
 
 #define PROTOCOL_LIGHTTELEMETRY
-#define BUTTON        4
-#define OLED_PANELS   6
-#define LTM_BAUDS     9600                       // the lower the better.
-#define AVERAGE_ITERATIONS  10
+#define BUTTON_PIN            4             //button pin in nano328
+#define OLED_PANELS           6             //number of telemetry screens
+#define LTM_BAUDS             9600          // the lower the better.
+#define AVERAGE_ITERATIONS     10           //iterations to average 'ground_course' calculation FIXME
+#define SPKR_PIN                5           //buzzer pin nano328
 
 
 //#include <SoftwareSerial.h>                   //this Software serial library gives many problmems
@@ -86,7 +87,7 @@ uint32_t    debounceDelay = 80;
 
 void read_button() { // detect the button has been pushed (debouncing) and increase displaypage counter
 
-  button_read = digitalRead(BUTTON);
+  button_read = digitalRead(BUTTON_PIN);
   //Serial.print(button_read);
 
   if (button_read != button_laststate)    //pressed button
@@ -267,8 +268,11 @@ void setup() {
   //Serial.begin(57600);              // debug port arduino. removed as it is not used it in the final working device
   ltmSerial.begin(LTM_BAUDS);         //telemetry downlink is 9600 now . PLease set your telemetry downlink so.
   //pinMode(LED_BUILTIN, OUTPUT); //debug
-  pinMode(BUTTON, INPUT);                     // digital input for pushbutton. Connnect to GND the other end of it.
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  //CRIUS CO-16 soldered pins to use adafruit libraries
+  
+  pinMode(BUTTON_PIN, INPUT);                     // digital input for pushbutton. Connnect to GND the other end of it.
+  pinMode(SPKR_PIN, OUTPUT);                     // digital output for buzzer. Connnect to GND the other end of it.
+
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  //CRIUS CO-16 : soldered pins to use adafruit libraries
   display.setTextColor(WHITE);
   display.clearDisplay();
   //blinkled(); blinkled(); //debug
