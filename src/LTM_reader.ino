@@ -59,6 +59,7 @@ Adafruit_SSD1306 display(OLED_RESET);
 #define BUTTON        4
 #define OLED_PANELS   6
 #define LTM_BAUDS     9600                       // the lower the better.
+#define AVERAGE_ITERATIONS  10
 
 
 //#include <SoftwareSerial.h>                   //this Software serial library gives many problmems
@@ -294,10 +295,10 @@ void loop() {
   //   if (ground_course < 0){ ground_course += 360;}
 
   //aveaging ground_course value
-  static uint16_t ground_courseRawArray[10];
-  ground_courseRawArray[(sig++) % 10] = ground_course;
-  for (uint8_t i = 0; i < 10; i++) ground_courseRaw += ground_courseRawArray[i];
-  ground_course = ground_courseRaw / 10;
+  static uint16_t ground_courseRawArray[AVERAGE_ITERATIONS];
+  ground_courseRawArray[(sig++) % AVERAGE_ITERATIONS] = ground_course;
+  for (uint8_t i = 0; i < AVERAGE_ITERATIONS; i++) ground_courseRaw += ground_courseRawArray[i];
+  ground_course = ground_courseRaw / AVERAGE_ITERATIONS;
 
   //TODO measure millis() just to experiment calculating SPEED and comparing with GPS speed from LTM
   GPS_dist_bearing(&uav_lat, &uav_lon, &uav_homelat, &uav_homelon, &home_distance, &home_heading);        // calculate some variables from LTM data
