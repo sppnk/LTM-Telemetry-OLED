@@ -39,6 +39,18 @@
 //
 //
 
+
+//defines
+#define PROTOCOL_LIGHTTELEMETRY
+#define BUTTON_PIN            4             //button pin in nano328
+#define OLED_PANELS           6             //number of telemetry screens
+#define LTM_BAUDS             9600          // the lower the better.
+#define AVERAGE_ITERATIONS     10           //iterations to average 'ground_course' calculation FIXME
+#define SPKR_PIN                5           //buzzer pin nano328
+#define BUZZER_HZ             50            //buzzer Hz
+#define UAV_BAT_ALARM_TONE_PITCH 250
+#define UAV_BAT_ALARM_TONE_DURATION  500
+
 #ifdef membug
 #include <MemoryFree.h>
 #endif
@@ -59,24 +71,13 @@ Adafruit_SSD1306 display(OLED_RESET);
 //SoftwareSerial ltmSerial(8, 9);               //8-RX, 9-TX
 //Serial ltmserial;
 
-#include <NewTone.h>                    // buzzer non blocking library
-
 #include <AltSoftSerial.h>              //  This library works fine
 AltSoftSerial ltmSerial(8, 9);          //8-RX, 9-TX
 
 #include <LightTelemetry.cpp>           //LTM definitions and functions
-#include <stdint.h>
 
-//defines
-#define PROTOCOL_LIGHTTELEMETRY
-#define BUTTON_PIN            4             //button pin in nano328
-#define OLED_PANELS           6             //number of telemetry screens
-#define LTM_BAUDS             9600          // the lower the better.
-#define AVERAGE_ITERATIONS     10           //iterations to average 'ground_course' calculation FIXME
-#define SPKR_PIN                5           //buzzer pin nano328
-#define BUZZER_HZ             50            //buzzer Hz
-#define UAV_BAT_ALARM_TONE_PITCH 250
-#define UAV_BAT_ALARM_TONE_DURATION  500
+#include <NewTone.h>                    // buzzer non blocking library
+#include <stdint.h>
 
 //some global variables
 uint8_t     displaypage = 0;
