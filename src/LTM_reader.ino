@@ -36,6 +36,8 @@
 // - add buzzer to create vario
 // - add buzzer to create distance, altitude, battery or RSSI audible alarms
 // - add arrow graphic for bearing home instead the numerical value, (to fly by instruments if video is lost).
+// - add flight timer 
+// - add flight report (max distance, minimum rssi, max altitude).
 //
 //
 
