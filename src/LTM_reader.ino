@@ -64,6 +64,7 @@ Adafruit_SSD1306 display(OLED_RESET);
 #define AVERAGE_ITERATIONS  10
 
 
+
 //#include <SoftwareSerial.h>                   //this Software serial library gives many problmems
 //SoftwareSerial ltmSerial(8, 9);               //8-RX, 9-TX
 //Serial ltmserial;
