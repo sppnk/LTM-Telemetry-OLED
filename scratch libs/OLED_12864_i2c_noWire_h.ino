@@ -13,7 +13,7 @@ i2c_OLED_send_char(val);
 delay(40);
 delay(2000);
 i2c_clear_OLED();
-i2c_OLED_send_string("hola mundo");
+i2c_OLED_send_string("hello world");
 delay(1000);
 //i2c_OLED_Put_Logo();
 i2c_OLED_send_logo();
