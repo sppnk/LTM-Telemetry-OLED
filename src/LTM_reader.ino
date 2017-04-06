@@ -45,25 +45,24 @@
 #include <MemoryFree.h>
 #endif
 
-#include <Wire.h>                           //if OLED is CO-16, short pins 13-14 to use this.
+//#include <Wire.h>                           //if OLED is CO-16, short pins 13-14 to use this.
 //#include <Adafruit_GFX.h>                 //not used in this code
-#include <Adafruit_SSD1306.h>               // memory consumer library. fixme
+//#include <Adafruit_SSD1306.h>               // memory consumer library. fixme
+
 
 
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
 
-#if (SSD1306_LCDHEIGHT != 64)
-#error("Height incorrect, please fix Adafruit_SSD1306.h!");
-#endif
+//#if (SSD1306_LCDHEIGHT != 64)
+//#error("Height incorrect, please fix Adafruit_SSD1306.h!");
+//#endif
 
 #define PROTOCOL_LIGHTTELEMETRY
 #define BUTTON        4
 #define OLED_PANELS   6
 #define LTM_BAUDS     9600                       // the lower the better.
 #define AVERAGE_ITERATIONS  10
-
-
 
 //#include <SoftwareSerial.h>                   //this Software serial library gives many problmems
 //SoftwareSerial ltmSerial(8, 9);               //8-RX, 9-TX
@@ -74,6 +73,7 @@ AltSoftSerial ltmSerial(8, 9);          //8-RX, 9-TX
 
 #include <LightTelemetry.cpp>
 #include <stdint.h>
+#include <i2c_oled.cpp>
 
 //some global variables
 uint8_t     displaypage = 0;
@@ -149,98 +149,41 @@ void GPS_dist_bearing(int32_t* lat1, int32_t* lon1, int32_t* lat2, int32_t* lon2
 
 void display_oled() { // display data set in OLED depending on displaypage var. Change at your needs.
   // I have found that textsize 2 causes problems and hangs antire device if the showed numbers are big.
-
-  display.clearDisplay();
-  display.setCursor(0, 0);
-  display.setTextSize(1);
-
+    
+  i2c_clear_OLED();
+  
+  for (byte n = 0; n<5 ;n++;){uint8_t  str[n][] ="                      ";} 
+  
   switch (displaypage) {
 
     case 0:                 //MAIN DATA SCREEN
-        display.setTextSize(1);display.print(F("H "));
-        display.setTextSize(2);
-        display.print(home_distance); display.print(F(" ")); display.println(home_heading - uav_heading); //calculated ground course
-      // display.print(F("Hdr  "));  display.println(home_heading); // calculated home heading
-      // display.print(F("Uhd  "));  display.println(uav_heading);  //ground course from LTM if there is no mag
-        display.setTextSize(1);display.print(F("RSSI "));display.setTextSize(2);  display.print(uav_rssi);
-        display.setTextSize(1);display.print(F(" ALT "));display.setTextSize(2);  display.println(uav_alt);
-        display.setTextSize(1);display.print(F("VBAT "));  display.setTextSize(2);display.print(uav_bat / 100); //show Volts, not mV
-        display.setTextSize(1);display.print(F(" mAh "));  display.println(uav_amp);display.println();
-        display.setTextSize(1);display.println();
-        display.print(F("Sat ")); display.print(uav_satellites_visible);
-        display.print(F(" SPD "));  display.print(uav_groundspeed);display.print(F(" M "));  display.println(uav_flightmode);
-      //       display.setTextSize(1);
-      //
-      //      display.print(F("HOM "));display.setTextSize(1); display.print(home_distance);   display.setTextSize(1);display.print(F(" DEG "));display.println(home_heading - ground_course);display.println();//FIXME uav_heading is attitude heading, not course over ground, so it is useless FIXME
-      //      display.setTextSize(1);display.print(F("RSSI "));  display.setTextSize(2);display.print(uav_rssi); display.setTextSize(1);display.print(F(" ALT "));  display.setTextSize(2);display.println(uav_alt);
-      //      display.setTextSize(1);display.print(F("VBAT "));  display.setTextSize(2);display.print(uav_bat / 100); display.setTextSize(1);display.print(F(" mAh "));  display.setTextSize(2);display.println(uav_amp);
-      //           display.setTextSize(1);display.print(F("SATS "));  display.setTextSize(2);display.print(uav_satellites_visible); display.setTextSize(1);display.print(F(" MODE "));  display.setTextSize(2);display.println(uav_flightmode);
+      
+         str [1] = "HOME" + home_distance;
+         str [2] = "RSSI" + uav_rssi;
+         str [1] = "ALT" + uav_alt;
+         str [1] = "VBAT" + uav_bat ;
+         str [1] = "mAh" + uav_amp;
 
+      
       break;
 
     case 1:
 
-      display.setTextSize(2);
-      display.print(F("RSSI:  "));  display.println(uav_rssi);
-      display.print(F("ALT:   "));  display.println(uav_alt);
-      display.print(F("VBATT: "));  display.println(uav_bat / 100); //show Volts, not mV
-      display.print(F("mAh:   "));  display.println(uav_amp); //this seems to be Amph, not current
-      display.setTextSize(1);
-      display.print(F("OK: "));  display.println(LTM_pkt_ok);
-      display.print(F(" KO: "));  display.println(LTM_pkt_ko);
+     
       break;
 
     case 2:
 
-      display.print(F("HDOP: "));      display.println(uav_HDOP);
-      display.print(F("Lat : "));  display.println(uav_lat);
-      display.print(F("Lon : "));  display.println(uav_lon);
-      display.print(F("Home: ")); display.println(home_distance);
-      display.print(F("HDir: ")); display.print(home_heading); display.print(F(" Udir: ")); display.println(uav_heading);
-      display.print(F("HFix: ")); display.print(uav_homefixstatus); display.print(F(" AngH: ")); display.println(home_heading - ground_course);
-      display.print(F("HLat: ")); display.println(uav_homelat);
-      display.print(F("HLon: ")); display.println(uav_homelon);
-      break;
+      
     case 3:
-      display.print(F("Sats: ")); display.print(uav_satellites_visible);
-      display.print(F(" FS: "));  display.print(uav_failsafe);
-      display.print(F(" FM: "));  display.println(uav_flightmode);
-      display.print(F("ALT: "));  display.print(uav_alt); display.print(F(" SPD: "));  display.println(uav_groundspeed);
-      display.print(F("R: "));  display.print(uav_roll);
-      display.print(F(" P: "));  display.print(uav_pitch); display.print(F(" ARM: ")); display.println(uav_arm);
-      display.print(F("Lat: "));  display.println(uav_lat);
-      display.print(F("Lon: "));  display.println(uav_lon);
-      display.setTextSize(2);
-      display.print(F("RSSI: "));  display.println(uav_rssi);
-      display.setTextSize(1);
-      display.print(F("OK: "));  display.print(LTM_pkt_ok);
-      display.print(F(" KO: "));  display.println(LTM_pkt_ko);
+     
       break;
     case 4:
 
-      display.setTextSize(1);
-
-      display.print(F("HOM ")); display.setTextSize(1); display.print(home_distance);   display.setTextSize(1); display.print(F(" DEG ")); display.println(home_heading - ground_course);  //FIXME uav_heading is attitude heading, not course over ground, so it is useless FIXME
-      display.print(F("COU ")); display.setTextSize(1); display.print(ground_course);   display.setTextSize(1); display.print(F(" HEAD ")); display.println(home_heading);
-      display.setTextSize(1); display.print(F("RSSI "));  display.setTextSize(2); display.print(uav_rssi); display.setTextSize(1); display.print(F(" ALT "));  display.setTextSize(2); display.println(uav_alt);
-      display.setTextSize(1); display.print(F("VBAT "));  display.setTextSize(2); display.print(uav_bat / 100); display.setTextSize(1); display.print(F(" mAh "));  display.setTextSize(1); display.println(uav_amp);    display.println();
-      display.setTextSize(1); display.print(F("SATS "));  display.setTextSize(2); display.print(uav_satellites_visible); display.setTextSize(1); display.print(F(" MODE "));  display.setTextSize(2); display.println(uav_flightmode);
-
-
-      //      display.print(F("Gmode: ")); display.println(uav_gpsmode);
-      //      display.print(F("Nmod:  ")); display.println(uav_navmode);
-      //      display.print(F("Nact:  "));  display.println(uav_navaction);
-      //      display.print(F("WPnr:  "));  display.println(uav_WPnumber);
 
       break;
     case 5:
 
-      display.setTextSize(2);
-
-      display.print(F("FS:  ")); display.println(uav_failsafe);
-      display.print(F("ARM: ")); display.println(uav_arm);
-      display.print(F("Err: "));  display.println(ltm_naverror);
-      display.print(F("Flg: "));  display.println(ltm_flags);
 
       break;
 
@@ -249,9 +192,9 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
 
 
   }
-
-  display.display();
-
+  
+  for (byte n = 0; n<5 ;n++;){  i2c_OLED_send_string(str[n];} //print whole screen
+ 
 }
 
 //void blinkled() { // led for debugging. removed to save memory
@@ -267,13 +210,17 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
 
 void setup() {
 
-  //Serial.begin(57600);              // debug port arduino. removed as it is not used it in the final working device
-  ltmSerial.begin(LTM_BAUDS);         //telemetry downlink is 9600 now . PLease set your telemetry downlink so.
-  //pinMode(LED_BUILTIN, OUTPUT); //debug
+  //Serial.begin(57600);                       // debug port arduino. removed as it is not used it in the final working device
+  ltmSerial.begin(LTM_BAUDS);                 //telemetry downlink is 9600 now . PLease set your telemetry downlink so.
+  //pinMode(LED_BUILTIN, OUTPUT);             //debug
   pinMode(BUTTON, INPUT);                     // digital input for pushbutton. Connnect to GND the other end of it.
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  //CRIUS CO-16 soldered pins to use adafruit libraries
-  display.setTextColor(WHITE);
-  display.clearDisplay();
+  
+  i2c_OLED_init();          //init i2c display oled
+  i2c_clear_OLED();      
+  
+  //display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  //CRIUS CO-16 soldered pins to use adafruit libraries
+  //display.setTextColor(WHITE);
+  //display.clearDisplay();
   //blinkled(); blinkled(); //debug
 
 }
