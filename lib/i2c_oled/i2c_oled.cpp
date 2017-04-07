@@ -30,7 +30,7 @@ Serial.print(val);}
 
 #define OLED_address   0x3C     // OLED at address 0x3C in 7bit (FIXME move this define)
 
-char LINE_FILL_STRING[] = "                      "; // Used by clear_OLED() 128 bits / 6 bytes = 21 chars per row  
+char LINE_FILL_STRING[] = "                      "; // Used by clear_OLED() 128 bits / 6 bytes = 21 chars per row
 unsigned char CHAR_FORMAT = 0;      // use to INVERSE characters
 
 // use INVERSE    CHAR_FORMAT = 0b01111111;
@@ -38,7 +38,7 @@ unsigned char CHAR_FORMAT = 0;      // use to INVERSE characters
 
 static char buffer; // buffer to read bytes from ROM, using pgm_read_byte macro. NB! avr/pgmspace.h must be included prog_uchar LOGO[] PROGMEM = {  // My first attempt to flash a logo....
 
-// Fonts map 
+// Fonts map
 
 const uint8_t PROGMEM myFont[][6] = { // Refer to "Times New Roman" Font Database... 5 x 7 font
   { 0x00,0x00,0x00,0x00,0x00,0x00},
@@ -216,57 +216,57 @@ void i2c_OLED_send_string(const char *string){  // Sends a string of chars until
 }
 
 
-void i2c_OLED_send_logo(void){
-  unsigned char i,j;
-  i2c_OLED_send_cmd(0xa6);              //Set Normal Display
-  i2c_OLED_send_cmd(0xae);      // Display OFF
-  i2c_OLED_send_cmd(0x20);              // Set Memory Addressing Mode
-  i2c_OLED_send_cmd(0x00);              // Set Memory Addressing Mode to Horizontal addressing mode
-  i2c_OLED_send_cmd(0xb0);              // set page address to 0
-  i2c_OLED_send_cmd(0X40);              // Display start line register to 0
-  i2c_OLED_send_cmd(0);                 // Set low col address to 0
-  i2c_OLED_send_cmd(0x10);              // Set high col address to 0
-  for(int i=0; i<1024; i++) {          // fill the display's RAM with graphic... 128*64 pixel picture
-    buffer = pgm_read_byte(&(LOGO[i]));
-    i2c_OLED_send_byte(buffer);
-  }
-  i2c_OLED_send_cmd(0x81);             // Setup CONTRAST CONTROL, following byte is the contrast Value... always a 2 byte instruction
-  i2c_OLED_send_cmd(0x0);              // Set contrast value to 0
-  i2c_OLED_send_cmd(0xaf);           // display on
-  for(j=0; j<2; j++){
-    for(i=0x01; i<0xff; i++){
-      i2c_OLED_send_cmd(0x81);         // Setup CONTRAST CONTROL, following byte is the contrast Value
-      i2c_OLED_send_cmd(i);            // Set contrast value
-      delay(1);
-    }
-    for(i=0xff; i>0x01; i--){
-      i2c_OLED_send_cmd(0x81);         // Setup CONTRAST CONTROL, following byte is the contrast Value
-      i2c_OLED_send_cmd(i);            // Set contrast value
-      delay(1);
-    }
-  }
-  i2c_OLED_init();
-  i2c_clear_OLED();
-}
+// void i2c_OLED_send_logo(void){
+//   unsigned char i,j;
+//   i2c_OLED_send_cmd(0xa6);              //Set Normal Display
+//   i2c_OLED_send_cmd(0xae);      // Display OFF
+//   i2c_OLED_send_cmd(0x20);              // Set Memory Addressing Mode
+//   i2c_OLED_send_cmd(0x00);              // Set Memory Addressing Mode to Horizontal addressing mode
+//   i2c_OLED_send_cmd(0xb0);              // set page address to 0
+//   i2c_OLED_send_cmd(0X40);              // Display start line register to 0
+//   i2c_OLED_send_cmd(0);                 // Set low col address to 0
+//   i2c_OLED_send_cmd(0x10);              // Set high col address to 0
+//   for(int i=0; i<1024; i++) {          // fill the display's RAM with graphic... 128*64 pixel picture
+//     buffer = pgm_read_byte(&(LOGO[i]));
+//     i2c_OLED_send_byte(buffer);
+//   }
+//   i2c_OLED_send_cmd(0x81);             // Setup CONTRAST CONTROL, following byte is the contrast Value... always a 2 byte instruction
+//   i2c_OLED_send_cmd(0x0);              // Set contrast value to 0
+//   i2c_OLED_send_cmd(0xaf);           // display on
+//   for(j=0; j<2; j++){
+//     for(i=0x01; i<0xff; i++){
+//       i2c_OLED_send_cmd(0x81);         // Setup CONTRAST CONTROL, following byte is the contrast Value
+//       i2c_OLED_send_cmd(i);            // Set contrast value
+//       delay(1);
+//     }
+//     for(i=0xff; i>0x01; i--){
+//       i2c_OLED_send_cmd(0x81);         // Setup CONTRAST CONTROL, following byte is the contrast Value
+//       i2c_OLED_send_cmd(i);            // Set contrast value
+//       delay(1);
+//     }
+//   }
+//   i2c_OLED_init();
+//   i2c_clear_OLED();
+// }
 
-void i2c_OLED_Put_Logo(void){
-  unsigned char i,j;
-  i2c_OLED_send_cmd(0xa6);              //Set Normal Display
-  i2c_OLED_send_cmd(0xae);              // Display OFF
-  i2c_OLED_send_cmd(0x20);              // Set Memory Addressing Mode
-  i2c_OLED_send_cmd(0x00);              // Set Memory Addressing Mode to Horizontal addressing mode
-  i2c_OLED_send_cmd(0xb0);              // set page address to 0
-  i2c_OLED_send_cmd(0X40);              // Display start line register to 0
-  i2c_OLED_send_cmd(0);                 // Set low col address to 0
-  i2c_OLED_send_cmd(0x10);              // Set high col address to 0
-  for(int i=0; i<1024; i++) {           // fill the display's RAM with graphic... 128*64 pixel picture
-    buffer = pgm_read_byte(&(LOGO[i]));
-    i2c_OLED_send_byte(buffer);
-  }
-  i2c_OLED_send_cmd(0x81);              // Setup CONTRAST CONTROL, following byte is the contrast Value... always a 2 byte instruction
-  i2c_OLED_send_cmd(250);               // Here you can set the brightness 1 = dull, 255 is very bright
-  i2c_OLED_send_cmd(0xaf);              // display on
-}
+// void i2c_OLED_Put_Logo(void){
+//   unsigned char i,j;
+//   i2c_OLED_send_cmd(0xa6);              //Set Normal Display
+//   i2c_OLED_send_cmd(0xae);              // Display OFF
+//   i2c_OLED_send_cmd(0x20);              // Set Memory Addressing Mode
+//   i2c_OLED_send_cmd(0x00);              // Set Memory Addressing Mode to Horizontal addressing mode
+//   i2c_OLED_send_cmd(0xb0);              // set page address to 0
+//   i2c_OLED_send_cmd(0X40);              // Display start line register to 0
+//   i2c_OLED_send_cmd(0);                 // Set low col address to 0
+//   i2c_OLED_send_cmd(0x10);              // Set high col address to 0
+//   for(int i=0; i<1024; i++) {           // fill the display's RAM with graphic... 128*64 pixel picture
+//     buffer = pgm_read_byte(&(LOGO[i]));
+//     i2c_OLED_send_byte(buffer);
+//   }
+//   i2c_OLED_send_cmd(0x81);              // Setup CONTRAST CONTROL, following byte is the contrast Value... always a 2 byte instruction
+//   i2c_OLED_send_cmd(250);               // Here you can set the brightness 1 = dull, 255 is very bright
+//   i2c_OLED_send_cmd(0xaf);              // display on
+// }
 
 void i2c_OLED_set_XY(byte col, byte row) {        //  Not used in MW V2.0 but its here anyway!
   i2c_OLED_send_cmd(0xb0+row);                //set page address
@@ -317,7 +317,7 @@ void i2c_writeReg(uint8_t add, uint8_t reg, uint8_t val) {
 static uint32_t neutralizeTime = 0;
 static int16_t  i2c_errors_count = 0;
 
-void waitTransmissionI2C() {
+void waitTransmissionI2C(void) {
   uint16_t count = 255;
   while (!(TWCR & (1<<TWINT))) {
     count--;
@@ -334,7 +334,7 @@ void i2c_stop(void) {
   TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);
   //  while(TWCR & (1<<TWSTO));                // <- can produce a blocking state with some WMP clones
 }
-void i2c_write(uint8_t data ) {	
+void i2c_write(uint8_t data ) {
   TWDR = data;                                 // send data to the previously addressed device
   TWCR = (1<<TWINT) | (1<<TWEN);
   waitTransmissionI2C();

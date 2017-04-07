@@ -36,7 +36,7 @@
 // - add buzzer to create vario
 // - add buzzer to create distance, altitude, battery or RSSI audible alarms
 // - add arrow graphic for bearing home instead the numerical value, (to fly by instruments if video is lost).
-// - add flight timer 
+// - add flight timer
 // - add flight report (max distance, minimum rssi, max altitude).
 //
 //
@@ -51,8 +51,8 @@
 
 
 
-#define OLED_RESET 4
-Adafruit_SSD1306 display(OLED_RESET);
+// #define OLED_RESET 4
+// Adafruit_SSD1306 display(OLED_RESET);
 
 //#if (SSD1306_LCDHEIGHT != 64)
 //#error("Height incorrect, please fix Adafruit_SSD1306.h!");
@@ -149,34 +149,38 @@ void GPS_dist_bearing(int32_t* lat1, int32_t* lon1, int32_t* lat2, int32_t* lon2
 
 void display_oled() { // display data set in OLED depending on displaypage var. Change at your needs.
   // I have found that textsize 2 causes problems and hangs antire device if the showed numbers are big.
-    
+
   i2c_clear_OLED();
-  
-  for (byte n = 0; n<5 ;n++;){uint8_t  str[n][] ="                      ";} 
-  
+
+  for (byte n = 0; n<5 ;n++;){
+
+    uint8_t  str[n][] ="                      ";
+
+  }
+
   switch (displaypage) {
 
     case 0:                 //MAIN DATA SCREEN
-      
+
          str [1] = "HOME" + home_distance;
          str [2] = "RSSI" + uav_rssi;
          str [1] = "ALT" + uav_alt;
          str [1] = "VBAT" + uav_bat ;
          str [1] = "mAh" + uav_amp;
 
-      
+
       break;
 
     case 1:
 
-     
+
       break;
 
     case 2:
 
-      
+
     case 3:
-     
+
       break;
     case 4:
 
@@ -192,9 +196,9 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
 
 
   }
-  
+
   for (byte n = 0; n<5 ;n++;){  i2c_OLED_send_string(str[n];} //print whole screen
- 
+
 }
 
 //void blinkled() { // led for debugging. removed to save memory
@@ -214,10 +218,10 @@ void setup() {
   ltmSerial.begin(LTM_BAUDS);                 //telemetry downlink is 9600 now . PLease set your telemetry downlink so.
   //pinMode(LED_BUILTIN, OUTPUT);             //debug
   pinMode(BUTTON, INPUT);                     // digital input for pushbutton. Connnect to GND the other end of it.
-  
+
   i2c_OLED_init();          //init i2c display oled
-  i2c_clear_OLED();      
-  
+  i2c_clear_OLED();
+
   //display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  //CRIUS CO-16 soldered pins to use adafruit libraries
   //display.setTextColor(WHITE);
   //display.clearDisplay();
