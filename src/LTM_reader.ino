@@ -165,8 +165,8 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
     case 0:                 //MAIN DATA SCREEN
 
       sprintf (str[0], "HOME %i", home_distance);
-      sprintf (str[1], "HOME %i", home_distance);
-      sprintf (str[2], "HOME %i", home_distance);
+      sprintf (str[1], "ALT %i", uav_alt);
+      sprintf (str[2], "RSSI %i", uav_rssi);
       sprintf (str[3], "HOME %i", home_distance);
       sprintf (str[4], "HOME %i", home_distance);
 
@@ -198,7 +198,7 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
 
   }
 
-  for (byte n = 0; n<5 ;n++){  i2c_OLED_send_string(str[n];} //print whole screen
+  for (byte n = 0; n<5 ;n++){  i2c_OLED_send_string(str[n][]);} //print whole screen
 
 }
 
