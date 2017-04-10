@@ -154,7 +154,7 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
 
   for (byte n = 0; n<5 ;n++){
 
-    uint8_t  str[][n] ={"                      "};
+    uint8_t  str[n][] = {"                      "};
 
   }
 
