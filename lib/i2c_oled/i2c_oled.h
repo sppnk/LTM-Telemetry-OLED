@@ -20,3 +20,5 @@ void waitTransmissionI2C(void);
 void i2c_stop(void);
 void i2c_write(uint8_t data);
 void i2c_rep_start(uint8_t address);
+
+#endif
