@@ -164,12 +164,11 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
 
     case 0:                 //MAIN DATA SCREEN
 
-         str [0] = "HOME" + home_distance;
-         str [1] = "RSSI" + uav_rssi;
-         str [2] = "ALT" + uav_alt;
-         str [3] = "VBAT" + uav_bat ;
-         str [4] = "mAh" + uav_amp;
-
+      sprintf (str[0], "HOME %i", home_distance);
+      sprintf (str[1], "HOME %i", home_distance);
+      sprintf (str[2], "HOME %i", home_distance);
+      sprintf (str[3], "HOME %i", home_distance);
+      sprintf (str[4], "HOME %i", home_distance);
 
       break;
 
