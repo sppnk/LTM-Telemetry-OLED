@@ -165,17 +165,17 @@ const uint8_t PROGMEM myFont[][6] = { // Refer to "Times New Roman" Font Databas
   { 0x30,0x48,0x45,0x40,0x20,0x00}, //   (121)  ? - 0x00BF Inverted Question Mark
 };
 
-void i2c_OLED_send_cmd(uint8_t command) {
+i2c_OLED_send_cmd(uint8_t command) {
   TWBR = ((F_CPU / 400000L) - 16) / 2; // change the I2C clock rate
   i2c_writeReg(OLED_address, 0x80, (uint8_t)command);
 }
 
-void i2c_OLED_send_byte(uint8_t val) {
+i2c_OLED_send_byte(uint8_t val) {
   TWBR = ((F_CPU / 400000L) - 16) / 2; // change the I2C clock rate
   i2c_writeReg(OLED_address, 0x40, (uint8_t)val);
 }
 
-void  i2c_OLED_init(void){
+i2c_OLED_init(void){
   i2c_OLED_send_cmd(0xae);          //display off
   i2c_OLED_send_cmd(0xa4);          //SET All pixels OFF
 //  i2c_OLED_send_cmd(0xa5);            //SET ALL pixels ON
@@ -195,7 +195,7 @@ void  i2c_OLED_init(void){
   delay(20);
 }
 
-void i2c_OLED_send_char(unsigned char ascii){
+i2c_OLED_send_char(unsigned char ascii){
   unsigned char i;
   for(i=0;i<6;i++){
     buffer = pgm_read_byte(&(myFont[ascii - 32][i])); // call the macro to read ROM byte and put it in buffer
@@ -204,7 +204,7 @@ void i2c_OLED_send_char(unsigned char ascii){
   }
 }
 
-void i2c_OLED_send_string(const char *string){  // Sends a string of chars untill null terminator
+i2c_OLED_send_string(const char *string){  // Sends a string of chars untill null terminator
   unsigned char i=0;
   while(*string){
     for(i=0;i<6;i++){
@@ -268,19 +268,19 @@ void i2c_OLED_send_string(const char *string){  // Sends a string of chars until
 //   i2c_OLED_send_cmd(0xaf);              // display on
 // }
 
-void i2c_OLED_set_XY(byte col, byte row) {        //  Not used in MW V2.0 but its here anyway!
+i2c_OLED_set_XY(byte col, byte row) {        //  Not used in MW V2.0 but its here anyway!
   i2c_OLED_send_cmd(0xb0+row);                //set page address
   i2c_OLED_send_cmd(0x00+(8*col&0x0f));       //set low col address
   i2c_OLED_send_cmd(0x10+((8*col>>4)&0x0f));  //set high col address
 }
 
-void i2c_OLED_set_line(byte row) {   // goto the beginning of a single row, compattible with LCD_CONFIG
+i2c_OLED_set_line(byte row) {   // goto the beginning of a single row, compattible with LCD_CONFIG
   i2c_OLED_send_cmd(0xb0+row);   //set page address
   i2c_OLED_send_cmd(0);          //set low col address
   i2c_OLED_send_cmd(0x10);       //set high col address
 }
 
-void i2c_clear_OLED(void){
+i2c_clear_OLED(void){
 //  unsigned char i;
 //  for(i=0;i<8;i++){
 //    i2c_OLED_set_XY(0,i);
@@ -308,7 +308,7 @@ void i2c_clear_OLED(void){
 //########################################################################################################################
 //######################################################################################################################333333
 
-void i2c_writeReg(uint8_t add, uint8_t reg, uint8_t val) {
+i2c_writeReg(uint8_t add, uint8_t reg, uint8_t val) {
   i2c_rep_start(add<<1); // I2C write direction
   i2c_write(reg);        // register selection
   i2c_write(val);        // value to write in register
@@ -317,7 +317,7 @@ void i2c_writeReg(uint8_t add, uint8_t reg, uint8_t val) {
 static uint32_t neutralizeTime = 0;
 static int16_t  i2c_errors_count = 0;
 
-void waitTransmissionI2C(void) {
+waitTransmissionI2C(void) {
   uint16_t count = 255;
   while (!(TWCR & (1<<TWINT))) {
     count--;
@@ -330,16 +330,16 @@ void waitTransmissionI2C(void) {
   }
 }
 
-void i2c_stop(void) {
+i2c_stop(void) {
   TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);
   //  while(TWCR & (1<<TWSTO));                // <- can produce a blocking state with some WMP clones
 }
-void i2c_write(uint8_t data ) {
+i2c_write(uint8_t data ) {
   TWDR = data;                                 // send data to the previously addressed device
   TWCR = (1<<TWINT) | (1<<TWEN);
   waitTransmissionI2C();
 }
-void i2c_rep_start(uint8_t address) {
+i2c_rep_start(uint8_t address) {
   TWCR = (1<<TWINT) | (1<<TWSTA) | (1<<TWEN) ; // send REPEAT START condition
   waitTransmissionI2C();                       // wait until transmission completed
   TWDR = address;                              // send device address
