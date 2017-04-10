@@ -152,12 +152,14 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
 
   i2c_clear_OLED();
 
-  for (byte n = 0; n<5 ;n++){
+ // for (byte n = 0; n<5 ;n++){
 
-    uint8_t  str[n][] = {"                      "};
+   // uint8_t  str[n][] = {"                      "};
 
-  }
+  //}
 
+  uint8_t str [5][];
+  
   switch (displaypage) {
 
     case 0:                 //MAIN DATA SCREEN
