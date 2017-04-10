@@ -162,11 +162,11 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
 
     case 0:                 //MAIN DATA SCREEN
 
-         str [1] = "HOME" + home_distance;
-         str [2] = "RSSI" + uav_rssi;
-         str [1] = "ALT" + uav_alt;
-         str [1] = "VBAT" + uav_bat ;
-         str [1] = "mAh" + uav_amp;
+         str [0] = "HOME" + home_distance;
+         str [1] = "RSSI" + uav_rssi;
+         str [2] = "ALT" + uav_alt;
+         str [3] = "VBAT" + uav_bat ;
+         str [4] = "mAh" + uav_amp;
 
 
       break;
