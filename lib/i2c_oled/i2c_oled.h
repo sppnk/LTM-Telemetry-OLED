@@ -1,4 +1,10 @@
 
+
+#ifndef i2c_oled_h
+#define i2c_oled_h
+
+#include <inttypes.h>
+
 void i2c_OLED_send_cmd(uint8_t command);
 void i2c_OLED_send_byte(uint8_t val) ;
 void  i2c_OLED_init(void);
