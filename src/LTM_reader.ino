@@ -41,6 +41,18 @@
 //
 //
 
+
+//defines
+#define PROTOCOL_LIGHTTELEMETRY
+#define BUTTON_PIN            4             //button pin in nano328
+#define OLED_PANELS           6             //number of telemetry screens
+#define LTM_BAUDS             9600          // the lower the better.
+#define AVERAGE_ITERATIONS     10           //iterations to average 'ground_course' calculation FIXME
+#define SPKR_PIN                5           //buzzer pin nano328
+#define BUZZER_HZ             50            //buzzer Hz
+#define UAV_BAT_ALARM_TONE_PITCH 250
+#define UAV_BAT_ALARM_TONE_DURATION  500
+
 #ifdef membug
 #include <MemoryFree.h>
 #endif
@@ -57,13 +69,6 @@ Adafruit_SSD1306 display(OLED_RESET);
 #error("Height incorrect, please fix Adafruit_SSD1306.h!");
 #endif
 
-#define PROTOCOL_LIGHTTELEMETRY
-#define BUTTON        4
-#define OLED_PANELS   6
-#define LTM_BAUDS     9600                       // the lower the better.
-#define AVERAGE_ITERATIONS  10
-
-
 //#include <SoftwareSerial.h>                   //this Software serial library gives many problmems
 //SoftwareSerial ltmSerial(8, 9);               //8-RX, 9-TX
 //Serial ltmserial;
@@ -71,7 +76,9 @@ Adafruit_SSD1306 display(OLED_RESET);
 #include <AltSoftSerial.h>              //  This library works fine
 AltSoftSerial ltmSerial(8, 9);          //8-RX, 9-TX
 
-#include <LightTelemetry.cpp>
+#include <LightTelemetry.cpp>           //LTM definitions and functions
+
+#include <NewTone.h>                    // buzzer non blocking library
 #include <stdint.h>
 
 //some global variables
@@ -88,7 +95,7 @@ uint32_t    debounceDelay = 80;
 
 void read_button() { // detect the button has been pushed (debouncing) and increase displaypage counter
 
-  button_read = digitalRead(BUTTON);
+  button_read = digitalRead(BUTTON_PIN);
   //Serial.print(button_read);
 
   if (button_read != button_laststate)    //pressed button
@@ -253,6 +260,13 @@ void display_oled() { // display data set in OLED depending on displaypage var. 
 
 }
 
+void buzzer (){
+
+if ((uav_bat/100) <= 10.5){NewTone(SPKR_PIN, UAV_BAT_ALARM_TONE_PITCH, UAV_BAT_ALARM_TONE_DURATION);}
+
+};
+
+
 //void blinkled() { // led for debugging. removed to save memory
 //
 //  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
@@ -269,8 +283,11 @@ void setup() {
   //Serial.begin(57600);              // debug port arduino. removed as it is not used it in the final working device
   ltmSerial.begin(LTM_BAUDS);         //telemetry downlink is 9600 now . PLease set your telemetry downlink so.
   //pinMode(LED_BUILTIN, OUTPUT); //debug
-  pinMode(BUTTON, INPUT);                     // digital input for pushbutton. Connnect to GND the other end of it.
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  //CRIUS CO-16 soldered pins to use adafruit libraries
+  
+  pinMode(BUTTON_PIN, INPUT);                     // digital input for pushbutton. Connnect to GND the other end of it.
+  pinMode(SPKR_PIN, OUTPUT);                     // digital output for buzzer. Connnect to GND the other end of it.
+
+  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  //CRIUS CO-16 : soldered pins to use adafruit libraries
   display.setTextColor(WHITE);
   display.clearDisplay();
   //blinkled(); blinkled(); //debug
@@ -305,11 +322,10 @@ void loop() {
   //TODO measure millis() just to experiment calculating SPEED and comparing with GPS speed from LTM
   GPS_dist_bearing(&uav_lat, &uav_lon, &uav_homelat, &uav_homelon, &home_distance, &home_heading);        // calculate some variables from LTM data
 
-
   read_button();        // check pushbutton and increase page counter
 
   display_oled();       // display data in oled screen
-
-
+  
+  //buzzer ();            // buzzer alarms control
 
 }
