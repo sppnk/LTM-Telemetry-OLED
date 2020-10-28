@@ -269,7 +269,7 @@ void setup() {
   //Serial.begin(57600);              // debug port arduino. removed as it is not used it in the final working device
   ltmSerial.begin(LTM_BAUDS);         //telemetry downlink is 9600 now . PLease set your telemetry downlink so.
   //pinMode(LED_BUILTIN, OUTPUT); //debug
-  pinMode(BUTTON, INPUT);                     // digital input for pushbutton. Connnect to GND the other end of it.
+  pinMode(BUTTON, INPUT_PULLUP);                     // digital input for pushbutton. Connnect to GND the other end of it.
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  //CRIUS CO-16 soldered pins to use adafruit libraries
   display.setTextColor(WHITE);
   display.clearDisplay();
