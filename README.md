@@ -1,5 +1,5 @@
 # LTM-Telemetry-OLED
-LTM Telemetry OLED display (for Turnigy 9x, other transmitters or standalone device).
+LTM Telemetry OLED  display (for Turnigy 9x, other transmitters or standalone device).
 
 LTM is Light TeleMetry protocol for slow baudrates and therefore long range. Info on LTM here: https://github.com/iNavFlight/inav/wiki/Lightweight-Telemetry-(LTM)
 
